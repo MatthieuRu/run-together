@@ -4,7 +4,7 @@ Front-end UI For run_together app.
 
 ## Goal
 
-Develop an application for runner who want to track progress in their running program for a specific race.   to support O&M (Operations & Maintenance) by providing insight on:
+Develop an application for runner who want to track progress in their running program for a specific race. 
 The aim was to develop this API to play with Flask, Dash, and the Strava API.
 
 The repository is the output of an article on: Create a Running Dash App with Strava Authentication.
