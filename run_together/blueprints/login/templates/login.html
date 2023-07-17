@@ -1,0 +1,37 @@
+<!-- templates/base.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Run Together</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='typography.css') }}">
+</head>
+
+<body>
+    <section class="hero">
+
+        <div class="WelcomePage_login">
+            <div class="WelcomePage_container">
+                <h1 class="WelcomePage_headline">Welcome to Run Together!</h1>
+                 <a href="{{ authorize_url }}" class="Button_login" type="button">
+                    Login
+                </a>
+            </div>
+        </div>
+
+               {% block content %}
+               {% endblock %}
+
+    </section>
+
+
+</body>
+
+</html>
