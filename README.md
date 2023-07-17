@@ -7,7 +7,7 @@ Front-end UI For run_together app.
 Develop an application for runner who want to track progress in their running program for a specific race. 
 The aim was to develop this API to play with Flask, Dash, and the Strava API.
 
-The repository is the output of an article on: Create a Running Dash App with Strava Authentication.
+The repository is the output of an article: [Create a Running Dash App with Strava Authentication](https://medium.com/@matthieu.ru/create-a-running-dash-app-with-strava-authentication-bfdd424f5ca6)
 
 ## Usage
 
