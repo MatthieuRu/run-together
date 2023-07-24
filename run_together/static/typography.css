@@ -1,0 +1,41 @@
+@font-face {
+  font-family: outfit;
+  src: url(Outfit-Regular.ttf);
+  font-style: normal;
+  font-weight: normal;
+}
+@font-face {
+  font-family: outfit;
+  src: url(Outfit-Light.ttf);
+  font-style: normal;
+  font-weight: 300;
+}
+@font-face {
+  font-family: outfit;
+  src: url(Outfit-Medium.ttf);
+  font-style: normal;
+  font-weight: 500;
+}
+body {
+    font-family: outfit, sans-serif;
+    font-style: normal
+    font-weight: normal
+}
+h1, h3, h4, h5, h6 {
+    color: black;
+    font-family: outfit, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+}
+h2 {
+    color: black;
+    font-family: outfit, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+}
+label{
+    color: black;
+    font-family: outfit, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+}

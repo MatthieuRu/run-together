@@ -1,77 +1,55 @@
 import dash_mantine_components as dmc
-import dash_bootstrap_components as dbc
 from dash_extensions.enrich import DashProxy
 from dash import html
 import dash
 from flask import session
-from stravalib.client import Client
-from os import environ as env
-from dotenv import load_dotenv
-from run_together.dash_apps.run_together.strava import get_strava_activities_pandas
-import dash_ag_grid as dag
+from run_together.dash_apps.run_together.strava_manager import get_strava_activities_pandas
+from run_together.dash_apps.run_together.strava_manager import StravaManager
+from run_together.dash_apps.run_together.header import get_header
+from run_together.dash_apps.run_together.body_generator import get_body
 
-# Load .env file
-load_dotenv()
-strava_client_id = env['stravaClientId']
-strava_client_secret = env['stravaClientSecret']
+import dash_ag_grid as dag
 
 
 def layout() -> html:
-    client = Client()
-    token_response = client.exchange_code_for_token(
-        client_id=strava_client_id,
-        client_secret=strava_client_secret,
-        code=session["strava_code"]
-    )
 
-    # Now store that short-lived access token somewhere (a database?)
-    client.access_token = token_response['access_token']
-    # You must also store the refresh token to be used later on to obtain another valid access token
-    # in case the current is already expired
-    client.refresh_token = token_response['refresh_token']
-
-    # An access_token is only valid for 6 hours, store expires_at somewhere and
-    # check it before making an API call.
-    client.token_expires_at = token_response['expires_at']
+    # Create the Strava Client
+    # print("strava_code:", session['strava_code'])
+    strava_manager = StravaManager()
+    print(session)
+    if "strava_code" in session.keys():
+        print("Create a a new session with the Strava Code")
+        strava_manager.generate_token_response(
+            strava_code=session['strava_code']
+        )
+    # Locally to keep the same token when no session.
+    else:
+        strava_manager.set_token_response(
+            access_token="b67b74da345925c51e1daa5e542bbf7f282abba8",
+            refresh_token="5104e377ddea013d94ce12f7504681e2a76aa017",
+            expires_at="1690247956"
+        )
 
     # Get the athlete in a pandas file
-    athlete = client.get_athlete()
-    activities = client.get_activities(limit=100)
+    # athlete = strava_manager.get_athlete()
+
+    activities = strava_manager.strava_client.get_activities(limit=5)
     activities_df = get_strava_activities_pandas(activities)
 
-    # Build the table with all the activities
-    records = activities_df.to_dict('records')
-    column_defs = []
-    for col in list(activities_df):
-        column_defs.append({"field": col})
-
-    grid = dag.AgGrid(
-        id="activity-table",
-        rowData=records,
-        columnDefs=column_defs,
-        defaultColDef={
-            "resizable": True,
-            "sortable": True,
-            "filter": True,
-            "minWidth": 125,
-            "editable": False,
-        },
-        columnSize="sizeToFit",
-        dashGridOptions={"rowSelection": "single"},
-    )
+    header = get_header()
+    grid = get_body(activities_df)
 
     basic_components = [
+        header,
         dmc.Space(h=10),
-        dbc.Row(dbc.Col(html.H3(children="Run Together", id="app_name"))),
-        dbc.Row(dbc.Col(html.Div(html.P(children=f"Welcome {athlete.firstname}"), className='heading'))),
         grid
+
+        # dbc.Row(dbc.Col(html.H3(children="Run Together", id="app_name"))),
+        # dbc.Row(dbc.Col(html.Div(html.P(children=f"Welcome {athlete.firstname}"), className='heading'))),
+        # grid
    ]
 
-    return dbc.Container(
-        [
-            html.Div(children=basic_components)
-        ], fluid=True)
-
+    return html.Div(children=basic_components)
 
 def run_together_callbacks(dash_app: DashProxy,
                            app_path: str,

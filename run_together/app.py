@@ -19,6 +19,10 @@ STATIC_DIR = os.path.join(BASE_DIR, "static")
 
 # Register the Dash App Run Together
 app_name = "run_together"
+
+external_stylesheets = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css']
+
+
 dash_app = DashProxy(
     __name__,
     server=app,
@@ -27,7 +31,7 @@ dash_app = DashProxy(
     routes_pathname_prefix="/run-together/",
     use_pages=True,
     assets_folder=STATIC_DIR,
-    # external_stylesheets=[dbc.themes.BOOTSTRAP],
+    external_stylesheets=external_stylesheets,
 )
 
 run_together_callbacks(dash_app=dash_app, app_path="/home", app_title="Run Together")
