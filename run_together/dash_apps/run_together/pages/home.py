@@ -33,7 +33,7 @@ def layout() -> html:
     # Get the athlete in a pandas file
     # athlete = strava_manager.get_athlete()
 
-    activities = strava_manager.strava_client.get_activities(limit=5)
+    activities = strava_manager.strava_client.get_activities(limit=50)
     activities_df = get_strava_activities_pandas(activities)
 
     header = get_header()

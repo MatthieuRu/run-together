@@ -1,3 +1,29 @@
+.central-column {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+}
+
+.central-column h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.central-column p {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Optional: Style for the Graph */
+.central-column #weekly-distance-chart {
+  margin-top: 20px;
+}
+
 /* CSS for the Grid */
 .grid {
   display: grid;
