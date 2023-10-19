@@ -1,6 +1,7 @@
 import pandas as pd
 from dotenv import load_dotenv
 from os import environ as env
+import logging
 from stravalib.client import Client
 from stravalib.model import Athlete
 
@@ -25,17 +26,17 @@ class StravaManager:
     def set_token_response(self, access_token: str, refresh_token: str, expires_at: str) -> None:
 
         # Now store that short-lived access token somewhere (a database?)
-        print("Set access_token to:", access_token)
+        logging.info(f"Set access_token to:{access_token}")
         self.strava_client.access_token = access_token
 
         # You must also store the refresh token to be used later on to obtain another valid access token
         # in case the current is already expired
-        print("Set refresh_token to:", refresh_token)
+        logging.info(f"Set refresh_token to:{refresh_token}")
         self.strava_client.refresh_token = refresh_token
 
         # An access_token is only valid for 6 hours, store expires_at somewhere and
         # check it before making an API call.
-        print("Set expires_at to", expires_at)
+        logging.info(f"Set expires_at to:{expires_at}")
         self.strava_client.token_expires_at = expires_at
 
     def generate_token_response(self, strava_code: str) -> None:
@@ -66,7 +67,7 @@ class StravaManager:
             The athlete model object.
         """
         athlete = self.strava_client.get_athlete()
-        print(athlete)
+        logging.info(f"Get athlete:{athlete}")
         return athlete
 
 
@@ -87,7 +88,6 @@ def get_strava_activities_pandas(activities):
                 'average_cadence',
                 'start_latlng'
                ]
-    print(activities)
     data = []
     for activity in activities:
         my_dict = activity.to_dict()

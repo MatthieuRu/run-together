@@ -72,7 +72,6 @@ def generate_left_column(activities_df: pd.DataFrame):
     left_columns = []  # List to store the left column components for each Run
 
     for run in records:
-        print(run['id'])
         # First row with the title
         first_row = html.Div(
             children=[

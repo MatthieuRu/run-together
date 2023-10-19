@@ -13,28 +13,22 @@ from pathlib import Path
 app = Flask(__name__)
 app.register_blueprint(login_blueprint)
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent
-STATIC_DIR = os.path.join(BASE_DIR, "static")
-
 # Register the Dash App Run Together
 app_name = "run_together"
-
-external_stylesheets = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css']
-
 
 dash_app = DashProxy(
     __name__,
     server=app,
+    title="Run Together",
     transforms=[MultiplexerTransform()],
     pages_folder="./dash_apps/run_together/pages/",
     routes_pathname_prefix="/run-together/",
     use_pages=True,
-    assets_folder=STATIC_DIR,
-    external_stylesheets=external_stylesheets,
+    assets_folder="./static",
+
 )
 
-run_together_callbacks(dash_app=dash_app, app_path="/home", app_title="Run Together")
+run_together_callbacks(dash_app=dash_app, app_path="/home")
 
 
 if __name__ == "__main__":

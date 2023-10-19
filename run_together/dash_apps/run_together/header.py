@@ -8,7 +8,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parents[2]
 STATIC_DIR = os.path.join(BASE_DIR, "static")
-print('STATIC_DIR', STATIC_DIR)
 
 header_style = {
     "display": "flex",  # Use Flexbox layout
