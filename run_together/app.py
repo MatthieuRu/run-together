@@ -1,11 +1,8 @@
 from run_together.blueprints.login.login import login_blueprint
-from run_together.dash_apps.run_together.pages.home import run_together_callbacks
+from run_together.dash_apps.run_together.run_together_app import run_together_callbacks
 
 from flask import Flask
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
-
-import os
-from pathlib import Path
 
 # python -m run_together.app
 
@@ -13,25 +10,26 @@ from pathlib import Path
 app = Flask(__name__)
 app.register_blueprint(login_blueprint)
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent
-STATIC_DIR = os.path.join(BASE_DIR, "static")
+# To use the small icon in the app
+external_stylesheets = [
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+]
 
-# Register the Dash App Run Together
-app_name = "run_together"
+
 dash_app = DashProxy(
     __name__,
     server=app,
+    title="Run Together",
     transforms=[MultiplexerTransform()],
     pages_folder="./dash_apps/run_together/pages/",
     routes_pathname_prefix="/run-together/",
     use_pages=True,
-    assets_folder=STATIC_DIR,
-    # external_stylesheets=[dbc.themes.BOOTSTRAP],
+    assets_folder="./static",
+    external_stylesheets=external_stylesheets,
 )
 
-run_together_callbacks(dash_app=dash_app, app_path="/home", app_title="Run Together")
+run_together_callbacks(dash_app=dash_app, app_path="/home")
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=8502) # use_reloader=False
+    app.run(debug=True, host="0.0.0.0", port=8502)  # use_reloader=False
