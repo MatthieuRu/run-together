@@ -1,7 +1,4 @@
-import dash_mantine_components as dmc
-import pandas as pd
 import dash_ag_grid as dag
-import dash_mantine_components as dmc
 from dash import html
 from dash import dcc
 import pandas as pd
@@ -150,34 +147,26 @@ def generate_central_column_bis(activities_df: pd.DataFrame):
 def get_body(activities_df: pd.DataFrame):
     # Define CSS styles for the columns
     left_column_style = {
-        "border": f"1px solid {dmc.theme.DEFAULT_COLORS['red'][4]}",
+        "border": f"1px solid red",
     }
 
     central_columns_style = {
-        "border": f"1px solid {dmc.theme.DEFAULT_COLORS['red'][4]}",
-    }
-
-    container_style = {
-        "width": "95%",  # Stretch container to 100% of the page width
-        "height": "100%",  # Stretch container to 100% of the page width
-        "border": f"1px solid {dmc.theme.DEFAULT_COLORS['green'][4]}",
-        "margin": "20px",  # Center the columns horizontally
+        "border": f"1px solid red",
     }
 
     grid = html.Div(
         children=[
             html.Div(
-                children=[
-                    # generate_left_column(activities_df=activities_df.head()),
-                ],
+                children=generate_left_column(activities_df=activities_df.head()),
+                # html.P(children=f"Left Column"),
+                # ,
+                # ],
                 style=left_column_style,
             ),
             html.Div(
                 children=[
-                    [
-                        generate_central_column(activities_df=activities_df),
-                        generate_central_column_bis(activities_df=activities_df),
-                    ]
+                    generate_central_column(activities_df=activities_df),
+                    generate_central_column_bis(activities_df=activities_df),
                 ],
                 style=central_columns_style,
             ),
@@ -185,5 +174,4 @@ def get_body(activities_df: pd.DataFrame):
         className="grid",  # You can define a CSS class for styling
     )
 
-    container = html.Div(children=grid, style=container_style)
-    return container
+    return grid

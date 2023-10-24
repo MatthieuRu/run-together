@@ -36,6 +36,7 @@
   border: 1px solid green; /* Add a green border with a 1-pixel width to the grid */
   width: 95%; /* Set the width of the grid to 95% of its containing element */
   margin: 20px; /* Add a 20-pixel margin around the grid */
+  /* height: 100px;*/
 }
 
 /* CSS for the Columns */

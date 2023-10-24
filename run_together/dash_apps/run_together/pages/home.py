@@ -20,9 +20,9 @@ def layout() -> html:
     # Locally to keep the same token when no session.
     else:
         strava_manager.set_token_response(
-            access_token="6059e41d580fda7af9a1703fccb8cc4e01737b9e",
+            access_token="46f1081e561dff64dbd91aed74eae7e8151df104",
             refresh_token="5104e377ddea013d94ce12f7504681e2a76aa017",
-            expires_at="1698104802",
+            expires_at="1698198589",
         )
 
     # Get the athlete in a pandas file
@@ -33,8 +33,7 @@ def layout() -> html:
     activities_df = get_strava_activities_pandas(activities)
 
     header = get_header(athlete.profile)
-    # grid = get_body(activities_df)
-    grid = get_body()
+    grid = get_body(activities_df)
 
     footer = get_footer()
 
