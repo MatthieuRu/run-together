@@ -1,6 +1,7 @@
 from run_together.blueprints.login.login import login_blueprint
 from run_together.dash_apps.run_together.run_together_app import run_together_callbacks
-
+from os import environ as env
+from dash import Dash
 from flask import Flask
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
@@ -8,13 +9,23 @@ from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
 # Create the Flask App
 app = Flask(__name__)
+app.config['SECRET_KEY'] = env['cookiePassword']
+
 app.register_blueprint(login_blueprint)
 
 # To use the small icon in the app
 external_stylesheets = [
-    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-]
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css",
+    "./static/css/style.css",  # Add the path to style.css
+    "./static/css/login-page-style.css",  # Add the path to login-page-style.css
+    # "https://tailwindcss.com/",
+    # {"src": "https://cdn.tailwindcss.com"}
 
+]
+external_script = [
+    "https://tailwindcss.com/",
+    {"src": "https://cdn.tailwindcss.com"}
+]
 
 dash_app = DashProxy(
     __name__,
@@ -26,6 +37,7 @@ dash_app = DashProxy(
     use_pages=True,
     assets_folder="./static",
     external_stylesheets=external_stylesheets,
+    external_scripts=external_script,
 )
 
 run_together_callbacks(dash_app=dash_app, app_path="/home")

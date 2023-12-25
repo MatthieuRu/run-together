@@ -1,59 +1,12 @@
 import dash_ag_grid as dag
 from dash import html
-from dash import dcc
 import pandas as pd
-import plotly.graph_objs as go
+from flask import session
+from run_together.dash_apps.run_together.training_calendar import get_training_calendar
+from run_together.dash_apps.run_together.strava_manager import get_strava_activities_pandas
 
-
-def generate_central_column(activities_df):
-    # Your logic to generate the central column content goes here
-    # This could be fetching the main content from a database or processing user input
-
-    # Process the DataFrame to group distances by week
-    activities_df["start_date_local"] = pd.to_datetime(
-        activities_df["start_date_local"]
-    )
-    weekly_distances = activities_df.resample("W", on="start_date_local")[
-        "distance_km"
-    ].sum()
-
-    # Create a bar chart to visualize weekly distances
-    bar_chart = dcc.Graph(
-        id="weekly-distance-chart",
-        figure={
-            "data": [
-                go.Bar(
-                    x=weekly_distances.index,
-                    y=weekly_distances.values,
-                    marker_color="#2E86C1",  # Customize the bar color
-                )
-            ],
-            "layout": go.Layout(
-                title="KM Overview per Weeks",
-                xaxis=dict(title="Week"),
-                yaxis=dict(title="Distance (KM)"),
-                height=400,
-                margin=dict(l=50, r=50, t=50, b=50),
-                paper_bgcolor="rgba(0,0,0,0)",  # Transparent background
-                plot_bgcolor="rgba(0,0,0,0)",  # Transparent plot area
-                font=dict(size=14, color="#333"),  # Font size and color
-            ),
-        },
-    )
-
-    # Create the central column content
-    central_column_content = html.Div(
-        children=[
-            html.H2("KM Overview per Weeks"),
-            html.P(
-                "The main KPI for a runner and its progression is the distance run every week."
-            ),
-            bar_chart,
-        ],
-        className="central-column",
-    )
-
-    return central_column_content
+from run_together.dash_apps.run_together.strava_manager import StravaManager
+from run_together.dash_apps.run_together.strava_manager import get_strava_activities_string
 
 
 def generate_left_column(activities_df: pd.DataFrame):
@@ -69,7 +22,10 @@ def generate_left_column(activities_df: pd.DataFrame):
         first_row = html.Div(
             children=[
                 # html.H4(f"Menu Item {run.run_id}")
-                html.H4(f"{run['name']}")
+                html.Div(
+                    className="h2",
+                    children=f"{run['name']}"
+                )
             ]
         )
 
@@ -144,34 +100,43 @@ def generate_central_column_bis(activities_df: pd.DataFrame):
     return central_column_content
 
 
-def get_body(activities_df: pd.DataFrame):
-    # Define CSS styles for the columns
-    left_column_style = {
-        "border": f"1px solid red",
-    }
+def get_body(year: int):
+    strava_manager = StravaManager()
 
-    central_columns_style = {
-        "border": f"1px solid red",
-    }
+    strava_manager.set_token_response(
+        access_token=session["access_token"],
+        refresh_token=session["refresh_token"],
+        expires_at=session["expires_at"],
+    )
+
+    # Add in the session the current activities
+    activities = strava_manager.get_activities_for_year(year)
+
+    activities_dict = get_strava_activities_string(activities)
+    activities_df = get_strava_activities_pandas(activities_dict)
 
     grid = html.Div(
         children=[
             html.Div(
-                children=generate_left_column(activities_df=activities_df.head()),
-                # html.P(children=f"Left Column"),
-                # ,
-                # ],
-                style=left_column_style,
+                children=generate_left_column(activities_df=activities_df.head(3)),
             ),
             html.Div(
+                className="calendar-container",
                 children=[
-                    generate_central_column(activities_df=activities_df),
-                    generate_central_column_bis(activities_df=activities_df),
-                ],
-                style=central_columns_style,
-            ),
+                    html.Div(className="month-name", children=f"Training Calendar"),
+                    html.Div(
+                        children=get_training_calendar(
+                            activities_df=activities_df,
+                            year=year
+                        ),
+                        # style={"height": "400px"},
+                        id="calendar-training-container"
+                    ),
+                ]
+            )
         ],
         className="grid",  # You can define a CSS class for styling
     )
+    return html.Div(children=[grid])
 
-    return grid
+    # return html.Div(children=[grid, generate_central_column_bis(activities_df=activities_df)])

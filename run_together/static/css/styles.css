@@ -1,0 +1,74 @@
+/* CSS for the Grid */
+.card_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 15px;
+  text-align: center;
+}
+
+/* Define a CSS class named .grid */
+.grid {
+  display: grid; /* Use CSS Grid layout */
+  grid-gap: 15px; /* Set the gap between grid items to 15 pixels */
+  grid-template-columns: 18% 1fr; /* Define grid columns: 15% width for the first column, and the remaining space for the second column */
+  text-align: center; /* Center-align the content within grid items */
+  border: 1px solid green; /* Add a green border with a 1-pixel width to the grid */
+  margin-left: 30px; /* Add a 20-pixel margin around the grid */
+  margin-right: 30px; /* Add a 20-pixel margin around the grid */
+}
+
+/* CSS for the Race Columns */
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f7f7fa;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* Optional: Style for the Graph */
+.central-column #weekly-distance-chart {
+  margin-top: 20px;
+}
+
+
+/* CSS for the Icons */
+.column .fas {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+/* Additional Styles */
+.left-column {
+  margin: 10px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: Style for the KM row */
+.left-column > div:nth-child(3) {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+html, body{
+    height: 100%;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.75;
+    color: #222;
+    text-align: left;
+    background-color: #f7f7fa;
+    /*background-color: #FFFFFF;*/
+    font-family: 'Outfit';
+
+}
+

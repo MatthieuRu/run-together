@@ -1,0 +1,183 @@
+/* Style for the year selector */
+.year-selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+/* Style for the navigation buttons */
+.year-selector button {
+    background-color: #99CC66; /* Circle color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Add hover effect for the buttons */
+.year-selector button:hover {
+    background-color: #F39C12;
+}
+
+
+
+.calendar-container {
+    text-align: left;
+    background-color: #ffffff; /* Background color */
+    padding: 20px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for a professional look */
+    border-radius: 15px; /* Rounded corners */
+    margin: 10px; /* Add a 10-pixel margin around the grid */
+}
+
+.yearly-calendar-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px; /* Increased space between rows */
+}
+
+.yearly-calendar-square {
+    color: #333; /* Text color */
+    width: 20%;
+    height: 200px;
+    border: 1px solid #ccc;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+    background-color: #f7f7fa; /* Background color */
+    position: relative; /* Added to position the circle */
+
+}
+
+.month-name {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.month-hours {
+    font-size: 16px;
+    text-align: right;
+    top-margin: 1px
+}
+.yearly-calendar-circle {
+    position: absolute;
+    left: 50%;
+    bottom: 2px; /* Positioned 2px from the bottom */
+    transform: translateX(-50%); /* Centered horizontally */
+    width: 70px;
+    height: 70px;
+    background-color: #99CC66; /* Circle color */
+    border-radius: 50%;
+    display: flex;
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+}
+
+/* Change background color on hover */
+.yearly-calendar-square:hover {
+    /* background-color: #007FB6; /* Change to your preferred hover color */
+    color: #FFFFFF;
+    background-color: #F39C12;
+
+}
+
+
+/* Weekly Calendar */
+/* Calendar Container */
+.week-calendar {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Week Row */
+.week-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+/* Week Number */
+.week-number {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* Day Square */
+.day-square {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-right: 10px;
+    flex: 1;
+}
+
+/* Activity Table */
+.activity-table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Activity Table Row */
+.activity-table tr {
+    border-bottom: 1px solid #ccc;
+}
+
+/* Activity Table Cell */
+.activity-table td {
+    padding: 5px;
+}
+
+/* Activity Table Header */
+.activity-table th {
+    font-weight: bold;
+}
+
+/* Header Row */
+.week-row:first-child {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Calendar Square */
+.calendar-square {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+}
+
+/* Month Name */
+.month-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Month Name */
+.h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+
+}
+
+/* Month Hours */
+.month-hours {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+/* Circle */
+.circle {
+    border-radius: 50%;
+    background-color: #3498db;
+    color: #fff;
+    text-align: center;
+    line-height: 25px;
+    font-size: 14px;
+    margin-top: 5px;
+}
