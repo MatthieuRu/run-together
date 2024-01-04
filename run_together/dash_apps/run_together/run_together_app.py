@@ -3,115 +3,117 @@ from dash import Input, Output, ctx, ALL
 from dash_extensions.enrich import DashProxy
 from flask import session
 from datetime import datetime, date
+import logging
 
-from run_together.dash_apps.run_together.strava_manager import StravaManager
-from run_together.dash_apps.run_together.strava_manager import get_strava_activities_pandas
-from run_together.dash_apps.run_together.strava_manager import get_strava_activities_string
-from run_together.dash_apps.run_together.training_calendar import get_week_calendar
-from run_together.dash_apps.run_together.training_calendar import get_training_calendar
-from run_together.dash_apps.run_together.pages.home import get_layout
+from run_together.dash_apps.run_together.training_calendar import get_monthly_calendar
+from run_together.dash_apps.run_together.training_calendar import get_yearly_calendar
+from run_together.dash_apps.run_together.pages.home import get_home_layout
 
 
-def run_together_callbacks(
-        dash_app: DashProxy,
-        app_path: str,
+def run_together_app(
+    dash_app: DashProxy,
+    app_path: str,
 ) -> object:
-    dash.register_page(
-        __name__,
-        layout=get_layout,
-        path=app_path
-    )
+    dash.register_page(__name__, layout=get_home_layout, path=app_path)
 
     @dash_app.callback(
-        Output("calendar-training-container", "children", allow_duplicate=True),
-
+        Output("calendar-training-container", "children"),
         Input({"type": "select-month-btn", "index": ALL}, "n_clicks"),
-        Input({"type": "select-month-btn", "index": ALL}, "children"),
-
         Input({"type": "calendar-btn", "index": ALL}, "n_clicks"),
-
         prevent_initial_call=True,
     )
     def update_year_calendar_training(
-            month_n_clicks,
-            month_children,
-            calendar_n_clicks,
+        month_n_clicks,
+        calendar_n_clicks,
     ):
-        print("session", session)
         triggered_id = ctx.triggered_id
+        print("session", session)
         print("ctx", ctx)
         print("triggered_id", triggered_id)
-        print(month_children)
 
-        # Case we are in the monthly calendar & user select previous month
+        # Case: the user select the months on the monthly calendar
+        if triggered_id["type"] == "select-month-btn":
+            # Change the value for the selected month according to the user selection
+            session["selected_month"] = triggered_id["index"]
+            logging.info(
+                f"User Action: select-month-btn. Get Monthly Calendar: "
+                f"year={session['selected_year']} & month={session['selected_month']}"
+            )
+
+            return get_monthly_calendar(
+                selected_year=session["selected_year"],
+                selected_month=session["selected_month"],
+            )
+
+        # Case: the user click on the previous month on the monthly calendar
         if triggered_id.index == "prev-month":
-
-            # Update the selected month based on the direction
+            # If Month is JAN, update the year to the previous one
             if session["selected_month"] == "JAN":
                 session["selected_month"] = "DEC"
                 session["selected_year"] = session["selected_year"] - 1
+            # Else get the previous month in the correct format JAN, FEB etc
             else:
-                month_number = datetime.strptime(session["selected_month"], '%b').month - 1
+                month_number = (
+                    datetime.strptime(session["selected_month"], "%b").month - 1
+                )
                 session["selected_month"] = datetime.strftime(
-                    date(session["selected_year"], month_number, 1),
-                    '%b'
+                    date(session["selected_year"], month_number, 1), "%b"
                 ).upper()
 
-            return get_week_calendar(
+            logging.info(
+                f"User Action: prev-month. Get Monthly Calendar: "
+                f"year={session['selected_year']} & month={session['selected_month']}"
+            )
+            return get_monthly_calendar(
                 selected_year=session["selected_year"],
-                selected_month=session["selected_month"]
+                selected_month=session["selected_month"],
             )
 
-        # Case we are in the monthly calendar & user next previous month
+        # Case: the user click on the next month on the monthly calendar
         if triggered_id.index == "next-month":
-            # Update the selected month based on the direction
+            # If Month is DEC, update the year to the next one
             if session["selected_month"] == "DEC":
                 session["selected_month"] = "JAN"
                 session["selected_year"] = session["selected_year"] + 1
+            # Else get the next month in the correct format JAN, FEB et
             else:
-                month_number = datetime.strptime(session["selected_month"], '%b').month + 1
+                month_number = (
+                    datetime.strptime(session["selected_month"], "%b").month + 1
+                )
                 session["selected_month"] = datetime.strftime(
-                    date(session["selected_year"], month_number, 1),
-                    '%b'
+                    date(session["selected_year"], month_number, 1), "%b"
                 ).upper()
 
-            return get_week_calendar(
+            logging.info(
+                f"User Action: next-month. Get Monthly Calendar: "
+                f"year={session['selected_year']} & month={session['selected_month']}"
+            )
+            return get_monthly_calendar(
                 selected_year=session["selected_year"],
-                selected_month=session["selected_month"]
+                selected_month=session["selected_month"],
             )
 
-        # Case we are in the yearly calendar & user click on specific  month
-        if triggered_id["type"] == "select-month-btn":
-            session["selected_month"] = month_children[triggered_id["index"]][0]["props"]["children"]
-
-            return get_week_calendar(
-                selected_year=session["selected_year"],
-                selected_month=session["selected_month"]
+        # Case: the user click on `back to yearly calendar` from the monthly calendar
+        if triggered_id.index == "back-yearly-calendar":
+            logging.info(
+                f"User Action: back-yearly-calendar. Get yearly Calendar: year={session['selected_year']}"
             )
+            return get_yearly_calendar()
 
-        # Case we are in the yearly calendar & user click on previous year
+        # Case: the user click on the previous year on the yearly calendar
         if triggered_id.index == "prev-year":
             session["selected_year"] = session["selected_year"] - 1
 
-        # Case we are in the yearly calendar & user click on previous year
+            logging.info(
+                f"User Action: prev-year. Get yearly Calendar: year={session['selected_year']}"
+            )
+            return get_yearly_calendar()
+
+        # Case: the user click on the next year on the yearly calendar
         if triggered_id.index == "next-year":
             session["selected_year"] = session["selected_year"] + 1
 
-        strava_manager = StravaManager()
-        strava_manager.set_token_response(
-            access_token=session["access_token"],
-            refresh_token=session["refresh_token"],
-            expires_at=session["expires_at"],
-        )
-
-        activities = strava_manager.get_activities_for_year(session["selected_year"])
-        activities_dict = get_strava_activities_string(activities)
-        activities_df = get_strava_activities_pandas(activities_dict)
-
-        year_calendar_training = get_training_calendar(
-            activities_df=activities_df,
-            year=session["selected_year"]
-        )
-        return year_calendar_training
-
-
+            logging.info(
+                f"User Action: next-year. Get yearly Calendar: year={session['selected_year']}"
+            )
+            return get_yearly_calendar()

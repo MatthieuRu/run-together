@@ -42,31 +42,34 @@ name_application = {
     "font-weight": "bold",
 }
 
+
 def get_header():
     header = html.Div(
+        children=[
+            html.Img(
+                src="../../../static/img/running_shoe.png",
+                alt="Running Shoe",
+            ),
+            html.Div(
+                children="Run Together",
+                style=name_application,
+            ),
+            html.Img(
+                src=session["user_profile_picture"],
+                alt="Running Shoe",
+                style=avatar_style,
+            ),
+            html.Div(
+                id="menu",
+                style=menu_style,
                 children=[
-                    html.Img(
-                        src="../../../static/img/running_shoe.png",
-                        alt="Running Shoe",
-                    ),
-                    html.Div(
-                        children="Run Together",
-                        style=name_application,
-                    ),
-                    html.Img(
-                        src=session["user_profile_picture"], alt="Running Shoe", style=avatar_style
-                    ),
-                    html.Div(
-                        id="menu",
-                        style=menu_style,
-                        children=[
-                            html.Div("Setting", style=menu_item_style),
-                            html.Div("My Profile", style=menu_item_style),
-                            html.Div("Log Out", style=menu_item_style),
-                        ],
-                    ),
+                    html.Div("Setting", style=menu_item_style),
+                    html.Div("My Profile", style=menu_item_style),
+                    html.Div("Log Out", style=menu_item_style),
                 ],
-                style=container_style,
-            )
+            ),
+        ],
+        style=container_style,
+    )
 
     return header

@@ -3,11 +3,12 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta, date
 from os import environ as env
 import logging
+from typing import List
+from flask import session
 
 from stravalib.client import Client
 from stravalib.client import BatchedResultsIterator
 from stravalib.model import Athlete
-from stravalib.model import Activity
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -45,12 +46,14 @@ class StravaManager:
         - Reformatting of Strava data
     """
 
-    def __init__(self):
+    def __init__(self, session=True):
         """Init Strava CLient"""
         self.strava_client_id = int(env["stravaClientId"])
         self.strava_client_secret = env["stravaClientSecret"]
         self.strava_activity_column = get_strava_activity_column()
         self.strava_client = Client()
+        if session:
+            self.set_token_from_session()
 
     def set_token_response(
         self, access_token: str, refresh_token: str, expires_at: str
@@ -69,6 +72,34 @@ class StravaManager:
         logging.info(f"Set expires_at to: {expires_at}")
         self.strava_client.token_expires_at = expires_at
 
+    def set_token_from_env(self):
+        """
+        Fill the Strava Client with the information about the token.
+        Information save in the .env file at the root of the file see .env.example
+        This token need to be refreshed only if not valid.
+        """
+        session["access_token"] = env["access_token"]
+        session["refresh_token"] = env["refresh_token"]
+        session["expires_at"] = env["expires_at"]
+
+        self.set_token_response(
+            access_token=session["access_token"],
+            refresh_token=session["refresh_token"],
+            expires_at=session["expires_at"],
+        )
+
+    def set_token_from_session(self):
+        """
+        Fill the Strava Client with the information about the token.
+        Information save in Flask Session
+        This token need to be refreshed only if not valid.
+        """
+        self.set_token_response(
+            access_token=session["access_token"],
+            refresh_token=session["refresh_token"],
+            expires_at=session["expires_at"],
+        )
+
     def generate_token_response(self, strava_code: str) -> None:
         """
         Fill the Strava Client with the information about the token.
@@ -79,6 +110,10 @@ class StravaManager:
             client_secret=self.strava_client_secret,
             code=strava_code,
         )
+
+        session["access_token"] = token_response["access_token"]
+        session["refresh_token"] = token_response["refresh_token"]
+        session["expires_at"] = token_response["expires_at"]
 
         self.set_token_response(
             access_token=token_response["access_token"],
@@ -100,7 +135,7 @@ class StravaManager:
         logging.info(f"Get athlete:{athlete}")
         return athlete
 
-    def get_activities_for_year(self, year: int):
+    def get_activities_for_year(self, year: int) -> pd.DataFrame:
         """
 
         :param year:
@@ -113,77 +148,103 @@ class StravaManager:
         end_date = datetime(year, 12, 31, 23, 59, 59)
 
         # Convert datetime objects to ISO format strings
-        start_date_str = start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
-        end_date_str = end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        start_date_str = start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+        end_date_str = end_date.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         # Call the get_activities function with the calculated parameters
         activities = self.strava_client.get_activities(
             after=start_date_str,
             before=end_date_str,
         )
+        print(activities)
+        # Format to have a DataFrame
+        activities_dict = get_strava_activities_string(activities)
+        activities_df = get_strava_activities_pandas(activities_dict)
 
-        return activities
+        return activities_df
 
     def get_activities_for_month(self, year: int, month: int) -> BatchedResultsIterator:
         # Set the start date to the beginning of the specified month
         start_date = datetime(year, month, 1, 0, 0, 0)
 
         # Calculate the end of the month by adding one month and subtracting one second
-        end_date = (
-               datetime(year, month, 1, 0, 0, 0) + timedelta(days=32)
-        ).replace(day=1, second=0, microsecond=0) - timedelta(seconds=1)
+        end_date = (datetime(year, month, 1, 0, 0, 0) + timedelta(days=32)).replace(
+            day=1, second=0, microsecond=0
+        ) - timedelta(seconds=1)
 
         # Convert datetime objects to ISO format strings
-        start_date_str = start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
-        end_date_str = end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        start_date_str = start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+        end_date_str = end_date.strftime("%Y-%m-%dT%H:%M:%SZ")
         print("end_date_str", start_date_str, "end_date_str", end_date_str)
         # Call the get_activities function with the calculated parameters
-        activities = self.strava_client.get_activities(after=start_date_str, before=end_date_str, limit=None)
+        activities = self.strava_client.get_activities(
+            after=start_date_str, before=end_date_str, limit=None
+        )
 
         return activities
 
-    def get_activities_between(self, start_date: date, end_date: date) -> BatchedResultsIterator:
+    def get_activities_between(
+        self, start_date: date, end_date: date
+    ) -> BatchedResultsIterator:
         # Call the get_activities function with the calculated parameters
-        start_date_str = start_date.strftime('%Y-%m-%dT%H:%M:%SZ')
-        end_date_str = end_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        start_date_str = start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+        end_date_str = end_date.strftime("%Y-%m-%dT%H:%M:%SZ")
         print("start_date_str", start_date_str, "end_date_str", end_date_str)
 
-        activities = self.strava_client.get_activities(after=start_date_str, before=end_date_str, limit=None)
+        activities = self.strava_client.get_activities(
+            after=start_date_str, before=end_date_str, limit=None
+        )
 
         return activities
 
 
-
-def get_strava_activities_string(activities: BatchedResultsIterator):
+def get_strava_activities_string(activities: BatchedResultsIterator) -> List:
+    """
+        Return from a Batch from Strava API into a list of activity dictionary
+    :param BatchedResultsIterator activities: Batch
+    :return: data
+    """
     data = []
     try:
         logging.info(
             f"""Retrieve {len(list(activities))} activities from the BatchedResultsIterator"""
         )
     except:
-        logging.info(
-            f"""Retrieve 0 activities from the BatchedResultsIterator"""
-        )
+        logging.info("Retrieve 0 activities from the BatchedResultsIterator")
         return data
 
     for activity in activities:
         my_dict = activity.dict()
-        data.append([activity.id] + [my_dict.get(x) for x in get_strava_activity_column()])
+        data.append(
+            [activity.id] + [my_dict.get(x) for x in get_strava_activity_column()]
+        )
 
     return data
 
 
-def seconds_to_hms(seconds):
+def seconds_to_hms(seconds: int) -> str:
+    """
+        Convert a time in second into HH:MM:SS format
+    :param seconds: number of second
+    :return: formatted_time: string of time
+    """
     # Calculate hours, minutes, and seconds
     hours, remainder = divmod(seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
 
     # Format as HH:MM:SS
-    formatted_time = "{:02}h{:02}min{:02}".format(int(hours), int(minutes), int(seconds))
+    formatted_time = "{:02}h{:02}min{:02}".format(
+        int(hours), int(minutes), int(seconds)
+    )
     return formatted_time
 
 
-def seconds_to_h(seconds):
+def seconds_to_h(seconds: int) -> str:
+    """
+        Convert a time in second into HH Hours format (keep only the hour element)
+    :param seconds: number of second
+    :return: formatted_time: string of time
+    """
     # Calculate hours, minutes, and seconds
     hours, remainder = divmod(seconds, 3600)
 
@@ -192,7 +253,12 @@ def seconds_to_h(seconds):
     return formatted_time
 
 
-def get_strava_activities_pandas(activities):
+def get_strava_activities_pandas(activities: List) -> pd.DataFrame:
+    """
+        Convert the list of activities to a pandas dataframe
+    :param activities:
+    :return:
+    """
     my_cols = get_strava_activity_column()
     # Add id to the beginning of the columns, used when selecting a specific activity
     my_cols.insert(0, "id")
@@ -210,6 +276,6 @@ def get_strava_activities_pandas(activities):
     df["year"] = df["start_date_local"].dt.year
 
     # Apply the function to the duration_seconds column
-    df['moving_time_format'] = df['moving_time'].apply(seconds_to_hms)
+    df["moving_time_format"] = df["moving_time"].apply(seconds_to_hms)
 
     return df
