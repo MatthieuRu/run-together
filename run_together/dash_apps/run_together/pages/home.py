@@ -12,7 +12,7 @@ from run_together.dash_apps.run_together.strava_manager import StravaManager
 
 
 def get_home_layout() -> html:
-    strava_manager = StravaManager()
+    strava_manager = StravaManager(session=False)
 
     # If Token need to be refreshed
     # strava_manager.generate_token_response(strava_code=session["strava_code"])

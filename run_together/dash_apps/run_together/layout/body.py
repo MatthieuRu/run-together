@@ -7,7 +7,6 @@ from run_together.dash_apps.run_together.training_calendar import get_yearly_cal
 from run_together.dash_apps.run_together.strava_manager import StravaManager
 
 
-
 def generate_left_column(activities_df: pd.DataFrame):
     # Your logic to generate the left column content goes here
     # This could be fetching data, generating a navigation menu, or displaying additional informatio
@@ -96,22 +95,8 @@ def generate_central_column_bis(activities_df: pd.DataFrame):
 
 
 def get_body(year: int):
-    # strava_manager = StravaManager()
-    #
-    # strava_manager.set_token_response(
-    #     access_token=session["access_token"],
-    #     refresh_token=session["refresh_token"],
-    #     expires_at=session["expires_at"],
-    # )
-    #
-    # # Add in the session the current activities
-    # activities = strava_manager.get_activities_for_year(year)
-    #
-    # activities_dict = get_strava_activities_string(activities)
-    # activities_df = get_strava_activities_pandas(activities_dict)
-
+    year = 2023
     # Add in the session the current activities
-    print(session)
     strava_manager = StravaManager()
     activities_df = strava_manager.get_activities_for_year(year=year)
 
@@ -123,14 +108,18 @@ def get_body(year: int):
             html.Div(
                 className="calendar-container",
                 children=[
-                    html.Div(className="month-name", children="Training Calendar"),
+                    html.Div(style={"font-size": "24px", "font-weight": "bold"}, children="Training Calendar"),
                     html.Div(
                         children=get_yearly_calendar(), id="calendar-training-container"
                     ),
                 ],
             ),
         ],
-        className="grid",  # You can define a CSS class for styling
+        className="grid",  # CSS class for styling
     )
-    return html.Div(children=[grid])
-    # return html.Div(children=[grid, generate_central_column_bis(activities_df=activities_df)])
+    # return html.Div(children=[grid])
+    return html.Div(
+        children=[
+            grid,
+            generate_central_column_bis(activities_df=activities_df[["year", "month_of_year", "distance_km", "moving_time"]])
+        ])

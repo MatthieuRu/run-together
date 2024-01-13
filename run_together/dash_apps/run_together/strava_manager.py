@@ -137,9 +137,8 @@ class StravaManager:
 
     def get_activities_for_year(self, year: int) -> pd.DataFrame:
         """
-
         :param year:
-        :return:
+        :return: pandas with all the activities fro one year
         """
         # Set the start date to the beginning of the year
         start_date = datetime(year, 1, 1, 0, 0, 0)
@@ -156,7 +155,7 @@ class StravaManager:
             after=start_date_str,
             before=end_date_str,
         )
-        print(activities)
+
         # Format to have a DataFrame
         activities_dict = get_strava_activities_string(activities)
         activities_df = get_strava_activities_pandas(activities_dict)
@@ -175,7 +174,7 @@ class StravaManager:
         # Convert datetime objects to ISO format strings
         start_date_str = start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
         end_date_str = end_date.strftime("%Y-%m-%dT%H:%M:%SZ")
-        print("end_date_str", start_date_str, "end_date_str", end_date_str)
+
         # Call the get_activities function with the calculated parameters
         activities = self.strava_client.get_activities(
             after=start_date_str, before=end_date_str, limit=None
@@ -189,13 +188,16 @@ class StravaManager:
         # Call the get_activities function with the calculated parameters
         start_date_str = start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
         end_date_str = end_date.strftime("%Y-%m-%dT%H:%M:%SZ")
-        print("start_date_str", start_date_str, "end_date_str", end_date_str)
 
         activities = self.strava_client.get_activities(
             after=start_date_str, before=end_date_str, limit=None
         )
 
-        return activities
+        # Format to have a DataFrame
+        activities_dict = get_strava_activities_string(activities)
+        activities_df = get_strava_activities_pandas(activities_dict)
+
+        return activities_df
 
 
 def get_strava_activities_string(activities: BatchedResultsIterator) -> List:
@@ -248,9 +250,7 @@ def seconds_to_h(seconds: int) -> str:
     # Calculate hours, minutes, and seconds
     hours, remainder = divmod(seconds, 3600)
 
-    # Format as HH:MM:SS
-    formatted_time = "{:02} Hours".format(int(hours))
-    return formatted_time
+    return int(hours)
 
 
 def get_strava_activities_pandas(activities: List) -> pd.DataFrame:

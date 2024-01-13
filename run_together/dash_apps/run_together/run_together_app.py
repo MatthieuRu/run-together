@@ -22,14 +22,11 @@ def run_together_app(
         Input({"type": "calendar-btn", "index": ALL}, "n_clicks"),
         prevent_initial_call=True,
     )
-    def update_year_calendar_training(
+    def update_calendar_training_container(
         month_n_clicks,
         calendar_n_clicks,
     ):
         triggered_id = ctx.triggered_id
-        print("session", session)
-        print("ctx", ctx)
-        print("triggered_id", triggered_id)
 
         # Case: the user select the months on the monthly calendar
         if triggered_id["type"] == "select-month-btn":
@@ -41,7 +38,7 @@ def run_together_app(
             )
 
             return get_monthly_calendar(
-                selected_year=session["selected_year"],
+                year=session["selected_year"],
                 selected_month=session["selected_month"],
             )
 
@@ -65,7 +62,7 @@ def run_together_app(
                 f"year={session['selected_year']} & month={session['selected_month']}"
             )
             return get_monthly_calendar(
-                selected_year=session["selected_year"],
+                year=session["selected_year"],
                 selected_month=session["selected_month"],
             )
 
@@ -89,7 +86,7 @@ def run_together_app(
                 f"year={session['selected_year']} & month={session['selected_month']}"
             )
             return get_monthly_calendar(
-                selected_year=session["selected_year"],
+                year=session["selected_year"],
                 selected_month=session["selected_month"],
             )
 
@@ -98,7 +95,7 @@ def run_together_app(
             logging.info(
                 f"User Action: back-yearly-calendar. Get yearly Calendar: year={session['selected_year']}"
             )
-            return get_yearly_calendar()
+            return get_yearly_calendar(year=session["selected_year"])
 
         # Case: the user click on the previous year on the yearly calendar
         if triggered_id.index == "prev-year":
@@ -107,7 +104,7 @@ def run_together_app(
             logging.info(
                 f"User Action: prev-year. Get yearly Calendar: year={session['selected_year']}"
             )
-            return get_yearly_calendar()
+            return get_yearly_calendar(year=session["selected_year"])
 
         # Case: the user click on the next year on the yearly calendar
         if triggered_id.index == "next-year":
@@ -116,4 +113,4 @@ def run_together_app(
             logging.info(
                 f"User Action: next-year. Get yearly Calendar: year={session['selected_year']}"
             )
-            return get_yearly_calendar()
+            return get_yearly_calendar(year=session["selected_year"])
