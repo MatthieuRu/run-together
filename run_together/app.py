@@ -20,17 +20,16 @@ external_stylesheets = [
 
 # Adding the Tailwind CSS script in the application setup
 # Define external scripts, including the Tailwind CSS framework
-external_script = [
-    "https://tailwindcss.com/",
-  {"src": "https://cdn.tailwindcss.com"}
-]
+external_script = ["https://tailwindcss.com/", {"src": "https://cdn.tailwindcss.com"}]
 
 # Configure DashProxy instance for the Dash application
 dash_app = DashProxy(
     __name__,  # Set the name of the Dash application
     server=app,  # Connect the Dash application to the Flask app
     title="Run Together",  # Set the title of the Dash application
-    transforms=[MultiplexerTransform()],  # Apply the MultiplexerTransform for performance optimization
+    transforms=[
+        MultiplexerTransform()
+    ],  # Apply the MultiplexerTransform for performance optimization
     pages_folder="./dash_apps/run_together/pages/",  # Specify the folder containing Dash pages
     routes_pathname_prefix="/run-together/",  # Set the URL prefix for Dash routes
     use_pages=True,  # Enable the use of pages for organizing Dash layouts

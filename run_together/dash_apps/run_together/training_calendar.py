@@ -1,6 +1,5 @@
 from dash import html
 import pandas as pd
-from flask import session
 import calendar
 from datetime import datetime, date
 from typing import List
@@ -31,7 +30,7 @@ def normalize(value: int, max_value: int) -> float:
     min_range = 40  # Minimum value in the desired range
     max_range = 140  # Maximum value in the desired range
     return (value - min_value) / (max_value - min_value) * (
-            max_range - min_range
+        max_range - min_range
     ) + min_range
 
 
@@ -62,30 +61,26 @@ def get_monthly_calendar(year: int, month: str) -> html.Div:
 
     # Create a DataFrame with all days of the month (get the following num_days from the 1st of the month)
     all_days_selected_month = pd.date_range(
-        start=f"{year}-{month_number}-01",
-        periods=num_days,
-        freq="D"
+        start=f"{year}-{month_number}-01", periods=num_days, freq="D"
     )
 
     # Get the Monday of the first week
     first_monday_before_first_day = date.fromisocalendar(
         year=all_days_selected_month[0].isocalendar()[0],
         week=all_days_selected_month[0].isocalendar()[1],
-        day=1
+        day=1,
     )
 
     # Get the Sunday of the last week
     first_sunday_after_last_day = date.fromisocalendar(
         year=all_days_selected_month[-1].isocalendar()[0],
         week=all_days_selected_month[-1].isocalendar()[1],
-        day=7
+        day=7,
     )
 
     # Get all day between both day & add it to a DataFrame
     all_days_selected_month = pd.date_range(
-        start=first_monday_before_first_day,
-        end=first_sunday_after_last_day,
-        freq="d"
+        start=first_monday_before_first_day, end=first_sunday_after_last_day, freq="d"
     )
     month_df = pd.DataFrame({"date": all_days_selected_month})
 
@@ -154,9 +149,10 @@ def get_monthly_calendar(year: int, month: str) -> html.Div:
 
         # Iterate over each day in the week
         for day in week_data.day.unique():
-
             # Extract activities for the current day
-            day_activities = week_data[(week_data.day == day) & (~week_data.id.isna())].copy()
+            day_activities = week_data[
+                (week_data.day == day) & (~week_data.id.isna())
+            ].copy()
             activity_div = []
 
             if len(day_activities) > 0:
@@ -182,11 +178,11 @@ def get_monthly_calendar(year: int, month: str) -> html.Div:
             week_rows.append(
                 html.Td(
                     className="border p-1 h-28 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 "
-                              "overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300",
+                    "overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300",
                     children=[
                         html.Div(
                             className="flex flex-col h-28 mx-auto xl:w-40 lg:w-30 md:w-30 "
-                                      "sm:w-full w-10 mx-auto overflow-hidden",
+                            "sm:w-full w-10 mx-auto overflow-hidden",
                             children=[
                                 # Top part with day name
                                 html.Div(
@@ -285,7 +281,7 @@ def get_yearly_calendar(year: int) -> html.Div:
             .strftime("%b")
             .upper(): {
                 "distance": int(distance),
-                "moving_time": int(divmod(moving_time, 3600)[0])
+                "moving_time": int(divmod(moving_time, 3600)[0]),
             }
             for year, month, distance, moving_time in zip(
                 monthly_totals["year"],
@@ -326,7 +322,10 @@ def get_yearly_calendar(year: int) -> html.Div:
             # Create a calendar square with a button
             square = html.Button(
                 className="yearly-calendar-square",
-                id={"type": "select-month-btn", "index": month_name},  # Unique ID for each button
+                id={
+                    "type": "select-month-btn",
+                    "index": month_name,
+                },  # Unique ID for each button
                 children=[
                     html.Div(className="month-name", children=month_name),
                     html.Div(className="month-hours", children=f"{time_run} Hours"),
@@ -359,9 +358,10 @@ def get_yearly_calendar(year: int) -> html.Div:
     # Create the overall calendar container with navigation buttons and rows
     calendar_container = html.Div(
         children=[
-                     html.Div(children=" "),
-                     year_selector,
-                 ] + rows,
+            html.Div(children=" "),
+            year_selector,
+        ]
+        + rows,
     )
 
     return calendar_container

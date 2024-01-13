@@ -1,7 +1,6 @@
 import dash_ag_grid as dag
 from dash import html
 import pandas as pd
-from flask import session
 
 from run_together.dash_apps.run_together.training_calendar import get_yearly_calendar
 from run_together.dash_apps.run_together.strava_manager import StravaManager
@@ -108,7 +107,10 @@ def get_body(year: int):
             html.Div(
                 className="calendar-container",
                 children=[
-                    html.Div(style={"font-size": "24px", "font-weight": "bold"}, children="Training Calendar"),
+                    html.Div(
+                        style={"font-size": "24px", "font-weight": "bold"},
+                        children="Training Calendar",
+                    ),
                     html.Div(
                         children=get_yearly_calendar(), id="calendar-training-container"
                     ),
@@ -121,5 +123,10 @@ def get_body(year: int):
     return html.Div(
         children=[
             grid,
-            generate_central_column_bis(activities_df=activities_df[["year", "month_of_year", "distance_km", "moving_time"]])
-        ])
+            generate_central_column_bis(
+                activities_df=activities_df[
+                    ["year", "month_of_year", "distance_km", "moving_time"]
+                ]
+            ),
+        ]
+    )
