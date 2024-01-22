@@ -2,8 +2,8 @@ import dash_ag_grid as dag
 from dash import html
 import pandas as pd
 
-from run_together.dash_apps.run_together.training_calendar import get_yearly_calendar
-from run_together.dash_apps.run_together.strava_manager import StravaManager
+from dash_apps.run_together.training_calendar import get_yearly_calendar
+from dash_apps.run_together.strava_manager import StravaManager
 
 
 def generate_left_column(activities_df: pd.DataFrame):
@@ -112,7 +112,9 @@ def get_body(year: int):
                         children="Training Calendar",
                     ),
                     html.Div(
-                        children=get_yearly_calendar(), id="calendar-training-container"
+                        children=get_yearly_calendar(
+                            year=year
+                        ), id="calendar-training-container"
                     ),
                 ],
             ),

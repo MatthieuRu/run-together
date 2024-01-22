@@ -3,12 +3,12 @@ from datetime import datetime
 
 from dash import html
 
-from run_together.dash_apps.run_together.layout.header import get_header
-from run_together.dash_apps.run_together.layout.footer import get_footer
-from run_together.dash_apps.run_together.layout.body import get_body
+from dash_apps.run_together.layout.header import get_header
+from dash_apps.run_together.layout.footer import get_footer
+from dash_apps.run_together.layout.body import get_body
 
 from flask import session
-from run_together.dash_apps.run_together.strava_manager import StravaManager
+from dash_apps.run_together.strava_manager import StravaManager
 
 
 def get_home_layout() -> html:

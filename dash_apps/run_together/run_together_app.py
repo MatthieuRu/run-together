@@ -5,9 +5,9 @@ from flask import session
 from datetime import datetime, date
 import logging
 
-from run_together.dash_apps.run_together.training_calendar import get_monthly_calendar
-from run_together.dash_apps.run_together.training_calendar import get_yearly_calendar
-from run_together.dash_apps.run_together.pages.home import get_home_layout
+from dash_apps.run_together.training_calendar import get_monthly_calendar
+from dash_apps.run_together.training_calendar import get_yearly_calendar
+from dash_apps.run_together.pages.home import get_home_layout
 
 
 def run_together_app(
@@ -39,7 +39,7 @@ def run_together_app(
 
             return get_monthly_calendar(
                 year=session["selected_year"],
-                selected_month=session["selected_month"],
+                month=session["selected_month"],
             )
 
         # Case: the user click on the previous month on the monthly calendar
@@ -63,7 +63,7 @@ def run_together_app(
             )
             return get_monthly_calendar(
                 year=session["selected_year"],
-                selected_month=session["selected_month"],
+                month=session["selected_month"],
             )
 
         # Case: the user click on the next month on the monthly calendar
@@ -87,7 +87,7 @@ def run_together_app(
             )
             return get_monthly_calendar(
                 year=session["selected_year"],
-                selected_month=session["selected_month"],
+                month=session["selected_month"],
             )
 
         # Case: the user click on `back to yearly calendar` from the monthly calendar

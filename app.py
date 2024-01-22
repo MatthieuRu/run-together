@@ -1,5 +1,5 @@
-from run_together.blueprints.login.login import login_blueprint
-from run_together.dash_apps.run_together.run_together_app import run_together_app
+from blueprints.login.login import login_blueprint
+from dash_apps.run_together.run_together_app import run_together_app
 from os import environ as env
 from flask import Flask
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
@@ -8,6 +8,7 @@ from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
 # Create the Flask App
 app = Flask(__name__)
+
 app.config["SECRET_KEY"] = env["cookiePassword"]
 
 app.register_blueprint(login_blueprint)
@@ -38,8 +39,10 @@ dash_app = DashProxy(
     external_scripts=external_script,  # Add external scripts to the Dash application
 )
 
+
 # Initialize the Run Together Dash application using the configured DashProxy instance
 run_together_app(dash_app=dash_app, app_path="/home")
+
 
 
 if __name__ == "__main__":
