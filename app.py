@@ -39,6 +39,7 @@ dash_app = DashProxy(
     external_scripts=external_script,  # Add external scripts to the Dash application
 )
 
+server = dash_app.server
 
 # Initialize the Run Together Dash application using the configured DashProxy instance
 run_together_app(dash_app=dash_app, app_path="/home")
