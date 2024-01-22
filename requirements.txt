@@ -11,5 +11,6 @@ python-dotenv==0.19.1
 requests==2.28.2
 dash-extensions==1.0.1
 dash-iconify==0.1.2
-gunicorn
+gunicorn==20.1.0
+werkzeug==2.2.2
 stravalib
