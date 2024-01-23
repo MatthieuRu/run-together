@@ -8,7 +8,6 @@ from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
 # Create the Flask App
 app = Flask(__name__)
-
 app.config["SECRET_KEY"] = env["cookiePassword"]
 
 app.register_blueprint(login_blueprint)
