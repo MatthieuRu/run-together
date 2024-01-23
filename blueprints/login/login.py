@@ -16,6 +16,7 @@ login_blueprint = Blueprint(
 load_dotenv()
 strava_client_id = env["stravaClientId"]
 strava_client_secret = env["stravaClientSecret"]
+web_app_url = env["web_app_url"]
 
 # Strava Lib Client
 client = client.Client()
@@ -29,7 +30,7 @@ def landing():
     """
     authorize_url = client.authorization_url(
         client_id=strava_client_id,
-        redirect_uri="http://127.0.0.1:8502/run-together/callback",
+        redirect_uri=f"{web_app_url}/run-together/callback",
         scope=["read_all", "profile:read_all", "activity:read_all"],
     )
 
@@ -39,7 +40,7 @@ def landing():
 @login_blueprint.route("/run-together/callback")
 def strava_callback():
     """Strava the code needed to get the user's data in Callback in the following ULR:
-    http://127.0.0.1:8502/run-together/?state=&code={code}&scope=read,activity:read_all,profile:read_all,read_all
+    web_app_url/run-together/?state=&code={code}&scope=read,activity:read_all,profile:read_all,read_all
     This function get the code, put it in the Flash Session.
     Redirect to the Dash
         Add this URL as a parameter of my HTML file login.html as redirect of the login Button
