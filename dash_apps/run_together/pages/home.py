@@ -15,9 +15,9 @@ def get_home_layout() -> html:
     strava_manager = StravaManager(session=False)
 
     # If Token need to be refreshed
-    strava_manager.generate_token_response(strava_code=session["strava_code"])
+    # strava_manager.generate_token_response(strava_code=session["strava_code"])
 
-    # strava_manager.set_token_from_env()
+    strava_manager.set_token_from_env()
 
     current_year = datetime.now().year
     session["selected_year"] = current_year
