@@ -1,3 +1,4 @@
+import logging
 from os import environ as env
 from dotenv import load_dotenv
 from flask import Blueprint, render_template
@@ -14,7 +15,7 @@ login_blueprint = Blueprint(
 
 # Load .env file where are stored my strava credential
 load_dotenv()
-strava_client_id = env["stravaClientId"]
+strava_client_id = int(env["stravaClientId"])
 strava_client_secret = env["stravaClientSecret"]
 web_app_url = env["web_app_url"]
 
@@ -28,9 +29,11 @@ def landing():
     user's information.
     Add this URL as a parameter of my HTML file login.html as redirect of the login Button
     """
+    redirect_uri = f"{web_app_url}/run-together/callback"
+    logging.info(f"Login Completed, redirection: {redirect_uri}")
     authorize_url = client.authorization_url(
         client_id=strava_client_id,
-        redirect_uri=f"{web_app_url}/run-together/callback",
+        redirect_uri=redirect_uri,
         scope=["read_all", "profile:read_all", "activity:read_all"],
     )
 
