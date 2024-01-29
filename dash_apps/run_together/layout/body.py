@@ -94,7 +94,6 @@ def generate_central_column_bis(activities_df: pd.DataFrame):
 
 
 def get_body(year: int):
-    year = 2023
     # Add in the session the current activities
     strava_manager = StravaManager()
     activities_df = strava_manager.get_activities_for_year(year=year)
@@ -102,6 +101,7 @@ def get_body(year: int):
     grid = html.Div(
         children=[
             html.Div(
+                className="last-activities-container",
                 children=generate_left_column(activities_df=activities_df.head(3)),
             ),
             html.Div(
@@ -125,10 +125,8 @@ def get_body(year: int):
     return html.Div(
         children=[
             grid,
-            generate_central_column_bis(
-                activities_df=activities_df[
-                    ["year", "month_of_year", "distance_km", "moving_time"]
-                ]
-            ),
+            # generate_central_column_bis(
+            #     activities_df=activities_df
+            # ),
         ]
     )

@@ -6,6 +6,7 @@
   text-align: center;
 }
 
+
 /* Define a CSS class named .grid */
 .grid {
   display: grid; /* Use CSS Grid layout */
@@ -15,7 +16,35 @@
   border: 1px solid green; /* Add a green border with a 1-pixel width to the grid */
   margin-left: 30px; /* Add a 20-pixel margin around the grid */
   margin-right: 30px; /* Add a 20-pixel margin around the grid */
+  transition: grid-template-columns 6s ease;
+
 }
+
+
+/* Calendar container styles */
+.calendar-container {
+    text-align: left; /* Align text to the left within the container */
+    background-color: #ffffff; /* Set background color */
+    padding: 20px; /* Add padding around the container */
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for a professional look */
+    border-radius: 15px; /* Rounded corners */
+    margin: 10px; /* Add a 10-pixel margin around the grid */
+}
+
+
+/* If the screen size is 600px wide or less, hide the element */
+@media only screen and (max-width: 1850px) {
+  .last-activities-container {
+    display: none;
+  }
+ .grid{
+      grid-template-columns: 100%;
+   }
+}
+
+
+
+
 
 /* CSS for the Race Columns */
 .column {

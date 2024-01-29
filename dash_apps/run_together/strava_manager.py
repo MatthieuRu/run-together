@@ -278,4 +278,5 @@ def get_strava_activities_pandas(activities: List) -> pd.DataFrame:
     # Apply the function to the duration_seconds column
     df["moving_time_format"] = df["moving_time"].apply(seconds_to_hms)
 
-    return df
+    # Keep only runs
+    return df[df.type == "Run"]

@@ -31,7 +31,7 @@ def normalize(value: int, max_value: int) -> float:
     max_range = 140  # Maximum value in the desired range
     return (value - min_value) / (max_value - min_value) * (
         max_range - min_range
-    ) + min_range
+    ) + min_range - 2
 
 
 def get_monday_of_week(year, week_number) -> date:
@@ -267,7 +267,6 @@ def get_yearly_calendar(year: int) -> html.Div:
         .reset_index()
     )
 
-    print(monthly_totals)
     # Set up an empty dict which is going to be use if there are no activity for this year
     activities_dict = {}
     max_value = 0
@@ -334,7 +333,6 @@ def get_yearly_calendar(year: int) -> html.Div:
                         children=label_hours_run,
                         style={
                             "width": f"{circle_size}px",
-                            "height": f"{circle_size}px",
                         },
                     ),
                 ],

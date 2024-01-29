@@ -1,5 +1,6 @@
 import dash_mantine_components as dmc
 from datetime import datetime
+import time
 
 from dash import html
 
@@ -14,10 +15,14 @@ from dash_apps.run_together.strava_manager import StravaManager
 def get_home_layout() -> html:
     strava_manager = StravaManager(session=False)
 
-    # If Token need to be refreshed
-    # strava_manager.generate_token_response(strava_code=session["strava_code"])
-
-    strava_manager.set_token_from_env()
+    # no token yet associate to the session
+    if "expires_at" not in session:
+        strava_manager.generate_token_response(strava_code=session["strava_code"])
+    # token expired
+    elif time.time() > session['expires_at']:
+        strava_manager.generate_token_response(strava_code=session["strava_code"])
+    else:
+        strava_manager.set_token_from_session()
 
     current_year = datetime.now().year
     session["selected_year"] = current_year

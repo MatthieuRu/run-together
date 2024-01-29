@@ -1,3 +1,5 @@
+
+
 /* Style for the year selector */
 .calendar-selector {
     display: flex; /* Use flexbox layout */
@@ -53,14 +55,28 @@
     background-color: #F39C12; /* Change background color on hover */
 }
 
+/* Yearly calendar square styles */
+.yearly-calendar-square {
+    color: #333; /* Set text color */
+    width: 20%; /* Set width of each square to 20% of the container */
+    height: 200px; /* Set height of each square */
+    border: 1px solid #ccc; /* Add a 1px solid border with light gray color */
+    flex-direction: column; /* Arrange items vertically within each square */
+    justify-content: space-between; /* Distribute space between items */
+    padding: 10px; /* Add padding within each square */
+    transition: background-color 0.3s ease; /* Add smooth transition for background color changes */
+    background-color: #f7f7fa; /* Set initial background color */
+    position: relative; /* Position the square relative to its normal position */
+}
+
 /* Yearly calendar circle styles */
 .yearly-calendar-circle {
     position: absolute; /* Position the circle absolutely within its container */
     left: 50%; /* Center horizontally */
     bottom: 2px; /* Positioned 2px from the bottom */
     transform: translateX(-50%); /* Centered horizontally */
+
     width: 70px; /* Set width of the circle */
-    height: 70px; /* Set height of the circle */
     background-color: #99CC66; /* Circle color */
     border-radius: 50%; /* Create a circular shape */
     display: flex; /* Use flexbox layout for circle content */
@@ -68,7 +84,12 @@
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Center content vertically */
     font-size: 16px; /* Set font size */
+    max-width: 100%; /* Ensure max-width is 100% of its container */
+    aspect-ratio: 1 / 1; /* Set the aspect ratio to 1:1 (width equals height) */
 }
+
+
+
 
 /* Month name styles */
 .month-name {
@@ -83,12 +104,3 @@
     margin-top: 1px; /* Add a 1px margin at the top */
 }
 
-/* Calendar container styles */
-.calendar-container {
-    text-align: left; /* Align text to the left within the container */
-    background-color: #ffffff; /* Set background color */
-    padding: 20px; /* Add padding around the container */
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for a professional look */
-    border-radius: 15px; /* Rounded corners */
-    margin: 10px; /* Add a 10-pixel margin around the grid */
-}

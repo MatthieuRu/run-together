@@ -1,8 +1,11 @@
 from blueprints.login.login import login_blueprint
 from dash_apps.run_together.run_together_app import run_together_app
+from blueprints.login.aad import authorisation
+
 from os import environ as env
-from flask import Flask
+from flask import Flask, session
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
+
 
 # python -m run_together.app
 
@@ -38,11 +41,18 @@ dash_app = DashProxy(
     external_scripts=external_script,  # Add external scripts to the Dash application
 )
 
+# Flask App need registration
+excluded = [
+    "login.landing",
+    "login.strava_callback",
+    "static"
+]
+app = authorisation(app, session, excluded)
+
 server = dash_app.server
 
 # Initialize the Run Together Dash application using the configured DashProxy instance
 run_together_app(dash_app=dash_app, app_path="/home")
-
 
 
 if __name__ == "__main__":
