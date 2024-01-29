@@ -24,7 +24,7 @@ def is_user_authenticate(session: SessionMixin) -> bool:
     """Check if the user is connected by looking the session"""
     # Check if the user is in the session
     logging.info(session)
-    return "user_profile_picture" in session
+    return "user" in session
 
 
 def _authorize_view(func: Callable, session: SessionMixin):

@@ -54,6 +54,7 @@ def strava_callback():
 
     # add in to the Flask Session
     session["strava_code"] = code
+    session["user"] = {}
 
     # After obtaining the access token, you can redirect the user to your DASH application page
     return redirect("/run-together/home")
