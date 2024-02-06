@@ -49,12 +49,13 @@ excluded = [
 ]
 app = authorisation(app, session, excluded)
 
+# For the deployement of the heroku application
 server = dash_app.server
 
 # Initialize the Run Together Dash application using the configured DashProxy instance
 run_together_app(dash_app=dash_app, app_path="/home")
 
-
+# For the deployment of the application locally
 if __name__ == "__main__":
     # Run the Flask app when the script is executed
     app.run(debug=True, host="0.0.0.0", port=8502)  # use_reloader=False
