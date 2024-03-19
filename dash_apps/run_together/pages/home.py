@@ -1,4 +1,3 @@
-import dash_mantine_components as dmc
 from datetime import datetime
 import time
 
@@ -7,6 +6,7 @@ from dash import html
 from dash_apps.run_together.layout.header import get_header
 from dash_apps.run_together.layout.footer import get_footer
 from dash_apps.run_together.layout.body import get_body
+from dash_apps.run_together.layout.modal import get_modal_box
 
 from flask import session
 from dash_apps.run_together.strava_manager import StravaManager
@@ -33,14 +33,17 @@ def get_home_layout() -> html:
 
     header = get_header()
     body = get_body(year=session["selected_year"])
+    modal_box = get_modal_box()
 
     footer = get_footer()
 
     basic_components = [
         header,
-        dmc.Space(h=10),
+        html.Br(),
         body,
+        html.Br(),
         footer,
+        modal_box
     ]
 
     return html.Div(children=basic_components)

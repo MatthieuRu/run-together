@@ -44,7 +44,7 @@ def get_sunday_of_week(year, week_number) -> date:
     return date.fromisocalendar(year=year, week=week_number, day=7)
 
 
-def get_monthly_calendar(year: int, month: str) -> html.Div:
+def get_monthly_calendar(year: int, month: str) -> List[html.Div]:
     """
     Return the monthly calendar for the specified year and month.
 

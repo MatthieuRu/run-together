@@ -1,25 +1,20 @@
-/* CSS for the Grid */
-.card_grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 15px;
-  text-align: center;
-}
-
 
 /* Define a CSS class named .grid */
 .grid {
   display: grid; /* Use CSS Grid layout */
-  grid-gap: 15px; /* Set the gap between grid items to 15 pixels */
-  grid-template-columns: 18% 1fr; /* Define grid columns: 15% width for the first column, and the remaining space for the second column */
+  grid-template-columns: 350px 1fr;
   text-align: center; /* Center-align the content within grid items */
-  border: 1px solid green; /* Add a green border with a 1-pixel width to the grid */
+  /*border: 1px solid green;  Add a green border with a 1-pixel width to the grid */
   margin-left: 30px; /* Add a 20-pixel margin around the grid */
   margin-right: 30px; /* Add a 20-pixel margin around the grid */
-  transition: grid-template-columns 6s ease;
-
+  transition: 300ms; /* Change as needed */
 }
 
+@media only screen and (max-width: 1850px) {
+ .grid{
+      grid-template-columns: 0px 1fr;
+   }
+}
 
 /* Calendar container styles */
 .calendar-container {
@@ -28,64 +23,8 @@
     padding: 20px; /* Add padding around the container */
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for a professional look */
     border-radius: 15px; /* Rounded corners */
-    margin: 10px; /* Add a 10-pixel margin around the grid */
 }
 
-
-/* If the screen size is 600px wide or less, hide the element */
-@media only screen and (max-width: 1850px) {
-  .last-activities-container {
-    display: none;
-  }
- .grid{
-      grid-template-columns: 100%;
-   }
-}
-
-
-
-
-
-/* CSS for the Race Columns */
-.column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #f7f7fa;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-/* Optional: Style for the Graph */
-.central-column #weekly-distance-chart {
-  margin-top: 20px;
-}
-
-
-/* CSS for the Icons */
-.column .fas {
-  font-size: 32px;
-  margin-bottom: 10px;
-}
-
-/* Additional Styles */
-.left-column {
-  margin: 10px;
-  padding: 20px;
-  border: 1px solid #ddd;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Optional: Style for the KM row */
-.left-column > div:nth-child(3) {
-  text-align: center;
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 20px;
-}
 
 html, body{
     height: 100%;
@@ -101,3 +40,41 @@ html, body{
 
 }
 
+/* The Modal (background) */
+.modal-style {
+  /*display: none;  Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content-style {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}

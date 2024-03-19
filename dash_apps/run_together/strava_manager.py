@@ -6,9 +6,11 @@ import logging
 from typing import List
 from flask import session
 
+
+import requests
 from stravalib.client import Client
 from stravalib.client import BatchedResultsIterator
-from stravalib.model import Athlete
+from stravalib.model import Athlete, Activity
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -135,10 +137,65 @@ class StravaManager:
         logging.info(f"Get athlete:{athlete}")
         return athlete
 
+    def get_activity(self, activity_id: int) -> Activity:
+        """
+            Get Activity from  STRAVA API:
+            https://developers.strava.com/docs/reference/#api-activity
+
+        Returns
+        -------
+        class:`stravalib.model.Activity`
+            The Activity model object.
+        """
+
+        url = f"https://www.strava.com/api/v3/activities/{activity_id}?include_all_efforts="
+
+        headers = {
+            "Authorization": f"Bearer {self.strava_client.access_token}"
+        }
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            activity = response.json()
+
+        else:
+            raise Exception(f"Error: {response.status_code} - {response.text}")
+
+        return activity
+
+    def get_activity_stream(self, activity_id: int) -> dict:
+        """
+            Get Activity Stream from STRAVA API:
+            https://developers.strava.com/docs/reference/#api-Streams-getActivityStreams
+
+        Returns
+        -------
+        Dict stream From Strava V3
+        """
+
+        url = f"https://www.strava.com/api/v3/activities/{activity_id}/streams?keys=time,heartrate,latlng&key_by_type=true"
+
+        headers = {
+            "Authorization": f"Bearer {self.strava_client.access_token}"
+        }
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            activity_stream = response.json()
+            return activity_stream
+
+        else:
+            logging.info(f"Error: {response.status_code} - {response.text}")
+            raise Exception(f"Error: {response.status_code} - {response.text}")
+
+
+
     def get_activities_for_year(self, year: int) -> pd.DataFrame:
         """
         :param year:
-        :return: pandas with all the activities fro one year
+        :return: pandas with all the activities from one year
         """
         # Set the start date to the beginning of the year
         start_date = datetime(year, 1, 1, 0, 0, 0)
@@ -184,7 +241,7 @@ class StravaManager:
 
     def get_activities_between(
         self, start_date: date, end_date: date
-    ) -> BatchedResultsIterator:
+    ) -> pd.DataFrame:
         # Call the get_activities function with the calculated parameters
         start_date_str = start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
         end_date_str = end_date.strftime("%Y-%m-%dT%H:%M:%SZ")

@@ -1,5 +1,3 @@
-
-
 /* Style for the year selector */
 .calendar-selector {
     display: flex; /* Use flexbox layout */
@@ -55,6 +53,11 @@
     background-color: #F39C12; /* Change background color on hover */
 }
 
+/* Change background color on hover for yearly calendar squares */
+.yearly-calendar-square:hover .yearly-calendar-circle{
+    color: #000000; /* Change text color on hover */
+}
+
 /* Yearly calendar square styles */
 .yearly-calendar-square {
     color: #333; /* Set text color */
@@ -75,7 +78,6 @@
     left: 50%; /* Center horizontally */
     bottom: 2px; /* Positioned 2px from the bottom */
     transform: translateX(-50%); /* Centered horizontally */
-
     width: 70px; /* Set width of the circle */
     background-color: #99CC66; /* Circle color */
     border-radius: 50%; /* Create a circular shape */
@@ -87,8 +89,6 @@
     max-width: 100%; /* Ensure max-width is 100% of its container */
     aspect-ratio: 1 / 1; /* Set the aspect ratio to 1:1 (width equals height) */
 }
-
-
 
 
 /* Month name styles */

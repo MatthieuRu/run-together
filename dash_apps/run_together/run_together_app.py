@@ -5,9 +5,10 @@ from flask import session
 from datetime import datetime, date
 import logging
 
-from dash_apps.run_together.training_calendar import get_monthly_calendar
-from dash_apps.run_together.training_calendar import get_yearly_calendar
+from dash_apps.run_together.components.calendar_training import get_monthly_calendar
+from dash_apps.run_together.components.calendar_training import get_yearly_calendar
 from dash_apps.run_together.pages.home import get_home_layout
+from dash_apps.run_together.components.activity_details import get_activity_details
 
 
 def run_together_app(
@@ -15,6 +16,57 @@ def run_together_app(
     app_path: str,
 ) -> object:
     dash.register_page(__name__, layout=get_home_layout, path=app_path)
+
+    @dash_app.callback(
+        Output("hover", "children"),
+        Input("activities-graph", "hoverData"),
+    )
+    def display_modal_box(hover_data):
+        """
+        """
+        logging.info(hover_data)
+
+        return "ok"
+
+
+    @dash_app.callback(
+        Output("modal", "hidden"),
+        Output("modal-body", "children"),
+        Input({"type": "select-activity-btn", "index": ALL}, "n_clicks"),
+        prevent_initial_call=True,
+    )
+    def display_modal_box(_):
+        """
+        """
+        session['displayed_activity_id'] = ctx.triggered_id['index']
+        logging.info(
+            f"User Action: select-activity-btn. Get Activity: "
+            f"id={session['displayed_activity_id']}"
+        )
+
+        activity_map = get_activity_details(
+            activity_id=session['displayed_activity_id']
+        )
+
+        return False, activity_map
+
+    @dash_app.callback(
+        Output("modal", "hidden"),
+        Input("close-modal-btn", "n_clicks"),
+        prevent_initial_call=True,
+    )
+    def display_modal_box(
+            n_clicks
+    ):
+        """
+            Clost the Modal box when user click on the cross
+            :param n_clicks:  User Clicking on the cross
+            :return: Hidden = True for the model Component
+        """
+        logging.info(
+            f"User Action: close-modal-btn. Close Modal Box"
+        )
+        return True
 
     @dash_app.callback(
         Output("calendar-training-container", "children"),

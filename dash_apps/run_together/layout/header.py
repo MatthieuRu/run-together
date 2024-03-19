@@ -5,7 +5,7 @@ from flask import session
 container_style = {
     "display": "flex",  # Use Flexbox layout
     "justifyContent": "space-between",  # Align children with space between (left and right)
-    "border": "1px solid blue",
+    # "border": "1px solid blue",
     "height": "80px",
     "margin-left": "30px",
     "margin-right": "30px",

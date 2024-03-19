@@ -1,0 +1,50 @@
+/* CSS for the Grid */
+.card_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 15px;
+  text-align: center;
+}
+
+/* CSS for the Race Columns */
+.kpi-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f7f7fa;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* CSS for the Icons */
+.kpi-icons .fas {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+/* Additional Styles */
+.activity-card {
+  margin: 10px;
+  width: 300px;
+  height: 250px; /* Set height of each square */
+  padding: 10px;
+   border: 1px solid #ddd; /*Set border in red of each square */
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease; /* Add smooth transition for background color changes */
+
+}
+
+/* Add hover effect for the buttons, excluding .kpi-icons */
+.activity-card:hover {
+  background-color: #F39C12; /* Change background color on hover */
+  color: #FFFFFF; /* Change text color on hover */
+}
+
+/* Text color for .kpi-icons on .activity-card hover */
+.activity-card:hover .kpi-icons {
+  color: #000000; /* Change text color for .kpi-icons on .activity-card hover */
+}
+
