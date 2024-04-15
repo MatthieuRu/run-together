@@ -1,0 +1,106 @@
+/* Style for the year selector */
+.calendar-selector {
+    display: flex; /* Use flexbox layout */
+    align-items: center; /* Center items vertically within the container */
+    justify-content: space-between; /* Distribute space between items */
+    padding: 10px; /* Add padding around the container */
+    font-size: 24px; /* Set font size */
+    font-weight: bold; /* Set font weight to bold */
+}
+
+/* Style for the navigation buttons */
+.calendar-selector button {
+    background-color: #99CC66; /* Set background color */
+    color: white; /* Set text color */
+    border: none; /* Remove border */
+    padding: 10px 15px; /* Set padding for the button */
+    text-align: center; /* Center-align text within the button */
+    text-decoration: none; /* Remove default text decoration */
+    display: inline-block; /* Make the button an inline block */
+    font-size: 16px; /* Set font size */
+    cursor: pointer; /* Set cursor to pointer on hover */
+}
+
+/* Add hover effect for the buttons */
+.calendar-selector button:hover {
+    background-color: #F39C12; /* Change background color on hover */
+}
+
+/* Yearly calendar row styles */
+.yearly-calendar-row {
+    display: flex; /* Use flexbox layout for yearly calendar rows */
+    justify-content: space-between; /* Distribute space between items in rows */
+    margin-bottom: 10px; /* Add space below each row */
+}
+
+/* Yearly calendar square styles */
+.yearly-calendar-square {
+    color: #333; /* Set text color */
+    width: 20%; /* Set width of each square to 20% of the container */
+    height: 200px; /* Set height of each square */
+    border: 1px solid #ccc; /* Add a 1px solid border with light gray color */
+    flex-direction: column; /* Arrange items vertically within each square */
+    justify-content: space-between; /* Distribute space between items */
+    padding: 10px; /* Add padding within each square */
+    transition: background-color 0.3s ease; /* Add smooth transition for background color changes */
+    background-color: #f7f7fa; /* Set initial background color */
+    position: relative; /* Position the square relative to its normal position */
+}
+
+/* Change background color on hover for yearly calendar squares */
+.yearly-calendar-square:hover {
+    color: #FFFFFF; /* Change text color on hover */
+    background-color: #F39C12; /* Change background color on hover */
+}
+
+/* Change background color on hover for yearly calendar squares */
+.yearly-calendar-square:hover .yearly-calendar-circle{
+    color: #000000; /* Change text color on hover */
+}
+
+/* Yearly calendar square styles */
+.yearly-calendar-square {
+    color: #333; /* Set text color */
+    width: 20%; /* Set width of each square to 20% of the container */
+    height: 200px; /* Set height of each square */
+    border: 1px solid #ccc; /* Add a 1px solid border with light gray color */
+    flex-direction: column; /* Arrange items vertically within each square */
+    justify-content: space-between; /* Distribute space between items */
+    padding: 10px; /* Add padding within each square */
+    transition: background-color 0.3s ease; /* Add smooth transition for background color changes */
+    background-color: #f7f7fa; /* Set initial background color */
+    position: relative; /* Position the square relative to its normal position */
+}
+
+/* Yearly calendar circle styles */
+.yearly-calendar-circle {
+    position: absolute; /* Position the circle absolutely within its container */
+    left: 50%; /* Center horizontally */
+    bottom: 2px; /* Positioned 2px from the bottom */
+    transform: translateX(-50%); /* Centered horizontally */
+    width: 70px; /* Set width of the circle */
+    background-color: #99CC66; /* Circle color */
+    border-radius: 50%; /* Create a circular shape */
+    display: flex; /* Use flexbox layout for circle content */
+    font-weight: bold; /* Set font weight to bold */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    font-size: 16px; /* Set font size */
+    max-width: 100%; /* Ensure max-width is 100% of its container */
+    aspect-ratio: 1 / 1; /* Set the aspect ratio to 1:1 (width equals height) */
+}
+
+
+/* Month name styles */
+.month-name {
+    font-weight: bold; /* Set font weight to bold */
+    margin-bottom: 5px; /* Add space below the month name */
+}
+
+/* Month hours styles */
+.month-hours {
+    font-size: 16px; /* Set font size */
+    text-align: right; /* Align text to the right */
+    margin-top: 1px; /* Add a 1px margin at the top */
+}
+

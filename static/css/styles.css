@@ -1,0 +1,80 @@
+
+/* Define a CSS class named .grid */
+.grid {
+  display: grid; /* Use CSS Grid layout */
+  grid-template-columns: 350px 1fr;
+  text-align: center; /* Center-align the content within grid items */
+  /*border: 1px solid green;  Add a green border with a 1-pixel width to the grid */
+  margin-left: 30px; /* Add a 20-pixel margin around the grid */
+  margin-right: 30px; /* Add a 20-pixel margin around the grid */
+  transition: 300ms; /* Change as needed */
+}
+
+@media only screen and (max-width: 1850px) {
+ .grid{
+      grid-template-columns: 0px 1fr;
+   }
+}
+
+/* Calendar container styles */
+.calendar-container {
+    text-align: left; /* Align text to the left within the container */
+    background-color: #ffffff; /* Set background color */
+    padding: 20px; /* Add padding around the container */
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for a professional look */
+    border-radius: 15px; /* Rounded corners */
+}
+
+
+html, body{
+    height: 100%;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.75;
+    color: #222;
+    text-align: left;
+    background-color: #f7f7fa;
+    /*background-color: #FFFFFF;*/
+    font-family: 'Outfit';
+
+}
+
+/* The Modal (background) */
+.modal-style {
+  /*display: none;  Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content-style {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
