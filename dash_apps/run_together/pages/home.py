@@ -19,7 +19,7 @@ def get_home_layout() -> html:
     if "expires_at" not in session:
         strava_manager.generate_token_response(strava_code=session["strava_code"])
     # token expired
-    elif time.time() > session['expires_at']:
+    elif time.time() > session["expires_at"]:
         strava_manager.generate_token_response(strava_code=session["strava_code"])
     else:
         strava_manager.set_token_from_session()
@@ -37,13 +37,6 @@ def get_home_layout() -> html:
 
     footer = get_footer()
 
-    basic_components = [
-        header,
-        html.Br(),
-        body,
-        html.Br(),
-        footer,
-        modal_box
-    ]
+    basic_components = [header, html.Br(), body, html.Br(), footer, modal_box]
 
     return html.Div(children=basic_components)

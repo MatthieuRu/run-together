@@ -42,11 +42,7 @@ dash_app = DashProxy(
 )
 
 # Flask App need registration
-excluded = [
-    "login.landing",
-    "login.strava_callback",
-    "static"
-]
+excluded = ["login.landing", "login.strava_callback", "static"]
 app = authorisation(app, session, excluded)
 
 # For the deployement of the heroku application

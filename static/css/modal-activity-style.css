@@ -1,0 +1,42 @@
+/* The Modal (background) */
+.modal-style {
+  /* Hidden by default */
+  /* The modal container */
+  position: fixed; /* It remains fixed in its position even when the page is scrolled */
+  z-index: 1; /* Set a high z-index to make sure it appears on top of other elements */
+  padding-top: 100px; /* Positioning the modal box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if the content exceeds the modal's dimensions */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black with opacity to create a semi-transparent background */
+}
+
+/* Modal Content */
+.modal-content-style {
+  /* Styling for the content inside the modal */
+  background-color: #fefefe; /* Background color of the modal content */
+  margin: auto; /* Center the modal content horizontally */
+  padding: 20px; /* Padding around the modal content */
+  border: 1px solid #888; /* Border around the modal content */
+  width: 80%; /* Set the width of the modal content */
+}
+
+/* The Close Button */
+.close {
+  /* Styling for the close button */
+  color: #aaaaaa; /* Default color of the close button */
+  float: right; /* Align the close button to the right */
+  font-size: 28px; /* Set the font size of the close button */
+  font-weight: bold; /* Set the font weight of the close button */
+}
+
+.close:hover,
+.close:focus {
+  /* Styling for the close button on hover or focus */
+  color: #000; /* Change the color of the close button when hovered or focused */
+  text-decoration: none; /* Remove underline on hover or focus */
+  cursor: pointer; /* Change the cursor to pointer on hover or focus */
+}
