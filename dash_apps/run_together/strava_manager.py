@@ -6,7 +6,6 @@ import logging
 from typing import List
 from flask import session
 
-
 import requests
 from stravalib.client import Client
 from stravalib.client import BatchedResultsIterator
@@ -64,8 +63,8 @@ class StravaManager:
         logging.info(f"Set access_token to: {access_token}")
         self.strava_client.access_token = access_token
 
-        # You must also store the refresh token to be used later on to obtain another valid access token
-        # in case the current is already expired
+        # You must also store the refresh token to be used later on to obtain
+        # another valid access token in case the current is already expired
         logging.info(f"Set refresh_token to: {refresh_token}")
         self.strava_client.refresh_token = refresh_token
 
@@ -150,9 +149,7 @@ class StravaManager:
 
         url = f"https://www.strava.com/api/v3/activities/{activity_id}?include_all_efforts="
 
-        headers = {
-            "Authorization": f"Bearer {self.strava_client.access_token}"
-        }
+        headers = {"Authorization": f"Bearer {self.strava_client.access_token}"}
 
         response = requests.get(url, headers=headers)
 
@@ -171,14 +168,15 @@ class StravaManager:
 
         Returns
         -------
-        Dict stream From Strava V3
+        Dict stream From Strava API V3 with the time, heart-rate latitude and longitude.
         """
 
-        url = f"https://www.strava.com/api/v3/activities/{activity_id}/streams?keys=time,heartrate,latlng&key_by_type=true"
+        url = (
+            f"https://www.strava.com/api/v3/activities/{activity_id}/"
+            f"streams?keys=time,heartrate,latlng&key_by_type=true"
+        )
 
-        headers = {
-            "Authorization": f"Bearer {self.strava_client.access_token}"
-        }
+        headers = {"Authorization": f"Bearer {self.strava_client.access_token}"}
 
         response = requests.get(url, headers=headers)
 
@@ -189,8 +187,6 @@ class StravaManager:
         else:
             logging.info(f"Error: {response.status_code} - {response.text}")
             raise Exception(f"Error: {response.status_code} - {response.text}")
-
-
 
     def get_activities_for_year(self, year: int) -> pd.DataFrame:
         """
@@ -239,9 +235,7 @@ class StravaManager:
 
         return activities
 
-    def get_activities_between(
-        self, start_date: date, end_date: date
-    ) -> pd.DataFrame:
+    def get_activities_between(self, start_date: date, end_date: date) -> pd.DataFrame:
         # Call the get_activities function with the calculated parameters
         start_date_str = start_date.strftime("%Y-%m-%dT%H:%M:%SZ")
         end_date_str = end_date.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -268,7 +262,7 @@ def get_strava_activities_string(activities: BatchedResultsIterator) -> List:
         logging.info(
             f"""Retrieve {len(list(activities))} activities from the BatchedResultsIterator"""
         )
-    except:
+    except TypeError:
         logging.info("Retrieve 0 activities from the BatchedResultsIterator")
         return data
 

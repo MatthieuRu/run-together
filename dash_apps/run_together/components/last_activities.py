@@ -21,7 +21,7 @@ def get_last_activities(activities_df: pd.DataFrame) -> List[html.Button]:
             # Make sure the name is not longer that what can be display
             children=html.Div(children=f"{run['name'][0:43]}"),
             style={"margin-bottom": "10px"},
-            className="h3"
+            className="h3",
         )
 
         # Second row with three columns and icons
@@ -56,17 +56,14 @@ def get_last_activities(activities_df: pd.DataFrame) -> List[html.Button]:
         distance_km = html.Div(
             children=[f"{round(run['distance_km'], 2)} KM"],
             style={"margin-top": "10px"},
-            className="h2"
+            className="h2",
         )
 
         # Combine all rows into a left column grid layout
         activity_card = html.Button(
             children=[name_activity, kpi_icons, distance_km],
             className="activity-card",
-            id={
-                "type": "select-activity-btn",
-                "index":  run['id']
-            }
+            id={"type": "select-activity-btn", "index": run["id"]},
         )
 
         last_activities.append(activity_card)

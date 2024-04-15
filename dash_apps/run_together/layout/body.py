@@ -46,7 +46,9 @@ def get_body(year: int):
             html.Div(
                 className="last-activities-container",
                 # style={"border": "1px solid pink"},
-                children=get_last_activities(activities_df=activities_df.head(3)),
+                children=get_last_activities(
+                    activities_df=activities_df.iloc[[1, 3, 5],]
+                ),
             ),
             html.Div(
                 className="calendar-container",
@@ -56,10 +58,8 @@ def get_body(year: int):
                         children="Training Calendar",
                     ),
                     html.Div(
-                        children=get_yearly_calendar(
-                            year=year
-                        ),
-                        id="calendar-training-container"
+                        children=get_yearly_calendar(year=year),
+                        id="calendar-training-container",
                     ),
                 ],
             ),

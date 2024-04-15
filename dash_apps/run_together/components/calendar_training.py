@@ -29,9 +29,11 @@ def normalize(value: int, max_value: int) -> float:
     min_value = 0  # Minimum value in the original range
     min_range = 40  # Minimum value in the desired range
     max_range = 140  # Maximum value in the desired range
-    return (value - min_value) / (max_value - min_value) * (
-        max_range - min_range
-    ) + min_range - 2
+    return (
+        (value - min_value) / (max_value - min_value) * (max_range - min_range)
+        + min_range
+        - 2
+    )
 
 
 def get_monday_of_week(year, week_number) -> date:
@@ -59,7 +61,8 @@ def get_monthly_calendar(year: int, month: str) -> List[html.Div]:
     month_number = datetime.strptime(month, "%b").month
     weekday, num_days = calendar.monthrange(year, month_number)
 
-    # Create a DataFrame with all days of the month (get the following num_days from the 1st of the month)
+    # Create a DataFrame with all days of the month
+    # (get the following num_days from the 1st of the month)
     all_days_selected_month = pd.date_range(
         start=f"{year}-{month_number}-01", periods=num_days, freq="D"
     )
@@ -126,7 +129,8 @@ def get_monthly_calendar(year: int, month: str) -> List[html.Div]:
     ]:
         calendar_day_head.append(
             html.Th(
-                className="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs",
+                className="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 "
+                          "sm:w-20 w-10 xl:text-sm text-xs",
                 children=[
                     html.Span(
                         className="xl:block lg:block md:block sm:block hidden",

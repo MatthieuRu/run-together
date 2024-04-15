@@ -4,6 +4,7 @@ from dash_extensions.enrich import DashProxy
 from flask import session
 from datetime import datetime, date
 import logging
+import dash_leaflet as dl
 
 from dash_apps.run_together.components.calendar_training import get_monthly_calendar
 from dash_apps.run_together.components.calendar_training import get_yearly_calendar
@@ -18,16 +19,16 @@ def run_together_app(
     dash.register_page(__name__, layout=get_home_layout, path=app_path)
 
     @dash_app.callback(
-        Output("hover", "children"),
+        Output("marker-map", "children"),
         Input("activities-graph", "hoverData"),
+        Input("activity-stream", "data"),
+        prevent_initial_call=True,
     )
-    def display_modal_box(hover_data):
-        """
-        """
-        logging.info(hover_data)
+    def display_hover_data(hover_data, activity_stream):
+        index = hover_data["points"][0]["pointIndex"]
+        position = activity_stream["latlng"]["data"][index]
 
-        return "ok"
-
+        return [dl.Marker(position=position)]
 
     @dash_app.callback(
         Output("modal", "hidden"),
@@ -35,37 +36,36 @@ def run_together_app(
         Input({"type": "select-activity-btn", "index": ALL}, "n_clicks"),
         prevent_initial_call=True,
     )
-    def display_modal_box(_):
+    def display_modal_box(n_click):
         """
+        Open the Modal box when user click on one activity
+        :param n_clicks:  User Clicking on the activity
+        :return: Hidden = True for the model Component
         """
-        session['displayed_activity_id'] = ctx.triggered_id['index']
+        session["displayed_activity_id"] = ctx.triggered_id["index"]
         logging.info(
             f"User Action: select-activity-btn. Get Activity: "
             f"id={session['displayed_activity_id']}"
         )
 
-        activity_map = get_activity_details(
-            activity_id=session['displayed_activity_id']
+        activity_details_modal_content = get_activity_details(
+            activity_id=session["displayed_activity_id"]
         )
 
-        return False, activity_map
+        return False, activity_details_modal_content
 
     @dash_app.callback(
         Output("modal", "hidden"),
         Input("close-modal-btn", "n_clicks"),
         prevent_initial_call=True,
     )
-    def display_modal_box(
-            n_clicks
-    ):
+    def close_modal_box(n_clicks):
         """
-            Clost the Modal box when user click on the cross
-            :param n_clicks:  User Clicking on the cross
-            :return: Hidden = True for the model Component
+        Clost the Modal box when user click on the cross
+        :param n_clicks:  User Clicking on the cross
+        :return: Hidden = True for the model Component
         """
-        logging.info(
-            f"User Action: close-modal-btn. Close Modal Box"
-        )
+        logging.info("User Action: close-modal-btn. Close Modal Box")
         return True
 
     @dash_app.callback(
@@ -145,7 +145,8 @@ def run_together_app(
         # Case: the user click on `back to yearly calendar` from the monthly calendar
         if triggered_id.index == "back-yearly-calendar":
             logging.info(
-                f"User Action: back-yearly-calendar. Get yearly Calendar: year={session['selected_year']}"
+                f"User Action: back-yearly-calendar. Get yearly Calendar: "
+                f"year={session['selected_year']}"
             )
             return get_yearly_calendar(year=session["selected_year"])
 
