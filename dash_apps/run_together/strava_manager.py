@@ -1,4 +1,5 @@
 import pandas as pd
+import stravalib.exc
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, date
 from os import environ as env
@@ -133,7 +134,6 @@ class StravaManager:
             The athlete model object.
         """
         athlete = self.strava_client.get_athlete()
-        logging.info(f"Get athlete:{athlete}")
         return athlete
 
     def get_activity(self, activity_id: int) -> Activity:
@@ -262,7 +262,7 @@ def get_strava_activities_string(activities: BatchedResultsIterator) -> List:
         logging.info(
             f"""Retrieve {len(list(activities))} activities from the BatchedResultsIterator"""
         )
-    except TypeError:
+    except (TypeError, stravalib.exc.Fault) as e:
         logging.info("Retrieve 0 activities from the BatchedResultsIterator")
         return data
 

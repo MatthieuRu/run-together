@@ -1,5 +1,5 @@
 import dash
-from dash import Input, Output, ctx, ALL
+from dash import Input, Output, ctx, ALL, no_update
 from dash_extensions.enrich import DashProxy
 from flask import session
 from datetime import datetime, date
@@ -36,12 +36,18 @@ def run_together_app(
         Input({"type": "select-activity-btn", "index": ALL}, "n_clicks"),
         prevent_initial_call=True,
     )
-    def display_modal_box(n_click):
+    def display_modal_box(n_clicks):
         """
         Open the Modal box when user click on one activity
         :param n_clicks:  User Clicking on the activity
         :return: Hidden = True for the model Component
         """
+        logging.info(n_clicks)
+        # When the Component is build it can trigger the callbakc to avoid it
+        # check that n_click is not None
+        if all(x is None for x in n_clicks):
+            return no_update, no_update
+
         session["displayed_activity_id"] = ctx.triggered_id["index"]
         logging.info(
             f"User Action: select-activity-btn. Get Activity: "
@@ -65,6 +71,7 @@ def run_together_app(
         :param n_clicks:  User Clicking on the cross
         :return: Hidden = True for the model Component
         """
+
         logging.info("User Action: close-modal-btn. Close Modal Box")
         return True
 
@@ -79,6 +86,7 @@ def run_together_app(
         calendar_n_clicks,
     ):
         triggered_id = ctx.triggered_id
+        logging.info(f"1 {ctx.triggered_id}")
 
         # Case: the user select the months on the monthly calendar
         if triggered_id["type"] == "select-month-btn":

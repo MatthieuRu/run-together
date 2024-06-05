@@ -164,7 +164,8 @@ def get_monthly_calendar(year: int, month: str) -> List[html.Div]:
                 for index, activity in day_activities.iterrows():
                     activity_div.append(
                         html.Div(
-                            className="event bg-[#F39C12] text-white rounded p-1 text-sm mb-1",
+                            id={"type": "select-activity-btn", "index": activity.id},
+                            className="event bg-[#99CC66] text-white rounded p-1 text-sm mb-1 hover:bg-[#F39C12]",
                             children=[
                                 html.Span(
                                     className="event-name",
@@ -244,8 +245,9 @@ def get_monthly_calendar(year: int, month: str) -> List[html.Div]:
     calendar_container = [
         html.Div(children=year_selector),
         html.Button(
-            f"""Back {year}""",
+            f"""{year}""",
             id={"type": "calendar-btn", "index": "back-yearly-calendar"},
+            className="h3"
         ),
         month_calendar,
     ]

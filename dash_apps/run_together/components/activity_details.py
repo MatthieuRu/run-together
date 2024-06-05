@@ -6,8 +6,74 @@ from dash import dcc
 import logging
 import dash_leaflet as dl
 from flask import session
+import dash_mantine_components as dmc
 
 from dash_apps.run_together.strava_manager import StravaManager
+
+import datetime
+
+
+def convert_min_to_min_sec(minutes):
+    """
+    Convert a float value in minutes to a string in "M:S" format with minutes and seconds.
+
+    Parameters:
+    - minutes (float): Time in minutes.
+
+    Returns:
+    - str: Time in "M:S" format.
+    """
+    # Separate the integer part (minutes) from the fractional part (seconds)
+    mins = int(minutes)
+    secs = (minutes - mins) * 60
+    return f"{mins}:{int(secs):02d}"
+
+
+def calculate_speed(seconds, distances, range_points, p):
+    """
+    Calculate the speed in minutes per kilometer (min/km) for an athlete's run.
+
+    Parameters:
+    - seconds (list of int): List of time points in seconds.
+    - distances (list of float): List of distances corresponding to each time point in meters.
+    - range_points (int): Number of points before and after to consider for speed calculation.
+    - p (float): Percentage of points to keep (between 0 and 100). E.g., 100% means all points, 50% means every other point.
+
+    Returns:
+    - list of float: Speeds in min/km for the given points.
+    """
+
+    # Ensure p is between 0 and 100
+    if p < 0 or p > 100:
+        raise ValueError("Parameter p must be between 0 and 100")
+
+    # Initialize list to hold the speeds
+    speeds = []
+
+    # Convert meters to kilometers and seconds to minutes
+    def meters_to_km(meters):
+        return meters / 1000
+
+    def seconds_to_minutes(seconds):
+        return seconds / 60
+
+    # Calculate speed for each point considering range_points
+    for i in range(len(seconds)):
+        start_index = max(0, i - range_points)
+        end_index = min(len(seconds) - 1, i + range_points)
+
+        total_time = seconds[end_index] - seconds[start_index]
+        total_distance = distances[end_index] - distances[start_index]
+
+        if total_distance == 0:
+            speeds.append(float('inf'))
+        else:
+            total_time_min = seconds_to_minutes(total_time)
+            total_distance_km = meters_to_km(total_distance)
+            speed_min_per_km = total_time_min / total_distance_km
+            speeds.append(speed_min_per_km)
+
+    return speeds
 
 
 def get_activity_map(activity_id: int, activity_stream: dict) -> dl.Map:
@@ -58,6 +124,28 @@ def get_activity_map(activity_id: int, activity_stream: dict) -> dl.Map:
     return activity_map
 
 
+def get_reference_race():
+    """
+
+    :return:
+    """
+    selection_reference_race = html.Div(
+        [
+            dmc.SegmentedControl(
+                id="segmented",
+                value="ng",
+                data=[
+                    {"value": "marathon", "label": "Marathon"},
+                    {"value": "half_marathon", "label": "Half Marathon"},
+                    {"value": "10km", "label": "10 km"},
+                ],
+                mb=10,
+            ),
+        ]
+    )
+    return selection_reference_race
+
+
 def get_graph_heart_rate(activity_stream: Dict) -> dcc.Graph:
     """
     Generate a heart rate graph.
@@ -69,41 +157,85 @@ def get_graph_heart_rate(activity_stream: Dict) -> dcc.Graph:
     :param activity_stream: Dictionary containing activity stream data.
     :return: dcc.Graph component representing the heart rate graph.
     """
-    # Create a new Plotly figure
+    # print(activity_stream)
+    speed = calculate_speed(
+        seconds=activity_stream['time']['data'][4:],
+        distances=activity_stream['distance']['data'][4:],
+        range_points=50,
+        p=100
+    )
+
+
+    speed_format = [convert_min_to_min_sec(x) for x in speed]
+    # speed_second = [(x.hour * 3600) + (x.minute * 60) + x.second for x in speed]
+    speed_second = [x * 60 for x in speed]
+
+    # print(speed)
+
+    # Convert distance to km
+    distance = [x / 1000 for x in activity_stream["distance"]["data"]]
+
+    paces = [
+        {
+            "pace": "5:50",
+            "race": "EF",
+            "color": 'rgb(19, 151, 158)'
+        },
+        {
+            "pace": "4:00",
+            "race": "marathon",
+            "color": 'rgb(111, 231, 219)'
+        },
+        {
+            "pace": "3:45",
+            "race": "half-marathon",
+            "color": 'rgb(131, 90, 241)'
+        },
+        {
+            "pace": "3:30",
+            "race": "10km",
+            "color": 'rgb(184, 247, 212)'
+        },
+    ]
+
     fig = go.Figure()
+
+    for pace in paces:
+        pace["pace"] = datetime.datetime.strptime(pace["pace"], "%M:%S")
+        pace["pace_second"] = (pace["pace"].hour * 3600) + (pace["pace"].minute * 60) + pace["pace"].second
+
+        fig.add_trace(go.Scatter(
+            x=distance,
+            y=[pace["pace_second"] for i in distance],
+            hoverinfo='skip',  # Disable hover information
+            mode='lines',
+            line=dict(width=10, color=pace['color']),
+            name=pace['race']  # define stack group,
+        ))
 
     # Add heart rate data as a scatter plot
     fig.add_trace(
         go.Scatter(
-            x=[
-                x / 1000 for x in activity_stream["distance"]["data"]
-            ],  # Convert distance to km
-            y=activity_stream["heartrate"]["data"],
+            x=distance,
+            y=speed_second,
             mode="lines",
             line=dict(color="#F39C12"),
-            hovertemplate="Heart Rate: %{y} bpm<extra></extra>",  # Hover tooltip template
+            hovertemplate="Pace: %{customdata} min/km<extra></extra>",  # Hover tooltip template with y / 60
+            name="Pace",
+            customdata=speed_format
         )
     )
 
-    # Customize layout of the graph
-    fig.update_layout(
-        title=dict(
-            text="Heart Rate",
-            font=dict(size=50),
-        ),
-        plot_bgcolor="rgba(0,0,0,0)",  # Set plot background color
-    )
+    # Update layout
+    fig.update_layout(title='Pace',
+                      # xaxis_title='Points',
+                      yaxis_title='Pace min/km',
+                      yaxis_tickvals=[pace["pace_second"] for pace in paces],
+                      yaxis_ticktext=[pace["pace"].strftime("%M:%S") for pace in paces],
+                      yaxis=dict(autorange='reversed'))
 
-    # Customize x-axis appearance
-    fig.update_xaxes(
-        showspikes=True,
-        spikecolor="#F39C12",
-        spikesnap="cursor",
-        spikemode="across",
-        spikedash="solid",
-    )
+    # fig.update_layout(yaxis_range=(200, 350))
 
-    # Return dcc.Graph component with the generated figure
     return dcc.Graph(
         figure=fig,
         config={
@@ -112,7 +244,7 @@ def get_graph_heart_rate(activity_stream: Dict) -> dcc.Graph:
         },  # Disable display of logo and mode bar
         responsive=True,  # Enable responsiveness
         id="activities-graph",  # Set component ID
-    )
+         )
 
 
 def get_activity_details(activity_id: int) -> list[Union[Span, Div]]:
@@ -138,13 +270,17 @@ def get_activity_details(activity_id: int) -> list[Union[Span, Div]]:
     # Get heart rate graph component
     heart_rate_graph = get_graph_heart_rate(activity_stream=activity_stream)
 
+
     # Create grid layout for displaying map and graph components
     grid = html.Div(
         children=[
             html.Div(className="activities-map-container", children=activity_map),
             html.Div(
                 className="activities-graph-container",
-                children=heart_rate_graph,
+                children=[
+                    heart_rate_graph,
+                    get_reference_race()
+                ]
             ),
             # store the activity stream in a dash component to be used in the callbacl
             dcc.Store(id="activity-stream", data=activity_stream),

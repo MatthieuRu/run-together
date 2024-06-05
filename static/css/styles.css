@@ -25,6 +25,8 @@
     padding: 20px; /* Add padding around the container */
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for a professional look */
     border-radius: 15px; /* Rounded corners */
+    margin-left: 50px; /* Add a 20-pixel margin around the grid */
+    margin-right: 50px; /* Add a 20-pixel margin around the grid */
 }
 
 html, body{

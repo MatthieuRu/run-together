@@ -24,15 +24,15 @@ def get_home_layout() -> html:
     else:
         strava_manager.set_token_from_session()
 
-    current_year = datetime.now().year
-    session["selected_year"] = current_year
+    session["selected_year"] = datetime.now().year
+    session["selected_month"] = datetime.now().strftime('%b').upper()
 
     # Add in the session the current athlete
     athlete = strava_manager.get_athlete()
     session["user_profile_picture"] = athlete.profile
 
     header = get_header()
-    body = get_body(year=session["selected_year"])
+    body = get_body(year=session["selected_year"], month=session["selected_month"])
     modal_box = get_modal_box()
 
     footer = get_footer()

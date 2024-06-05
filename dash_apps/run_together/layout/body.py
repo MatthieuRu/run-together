@@ -1,10 +1,9 @@
 import dash_ag_grid as dag
 from dash import html
 import pandas as pd
+import logging
 
-from dash_apps.run_together.components.calendar_training import get_yearly_calendar
-from dash_apps.run_together.components.last_activities import get_last_activities
-from dash_apps.run_together.strava_manager import StravaManager
+from dash_apps.run_together.components.calendar_training import get_monthly_calendar
 
 
 def generate_central_column_bis(activities_df: pd.DataFrame):
@@ -36,35 +35,21 @@ def generate_central_column_bis(activities_df: pd.DataFrame):
     return central_column_content
 
 
-def get_body(year: int):
-    # Add in the session the current activities
-    strava_manager = StravaManager()
-    activities_df = strava_manager.get_activities_for_year(year=year)
+def get_body(year: int, month: str):
 
+    logging.info(f"""Initialisation of the Body for year: {year} & month: {month} """)
     grid = html.Div(
-        children=[
-            html.Div(
-                className="last-activities-container",
-                # style={"border": "1px solid pink"},
-                children=get_last_activities(
-                    activities_df=activities_df.iloc[[1, 3, 5],]
+            className="calendar-container",
+            children=[
+                html.Div(
+                    style={"font-size": "24px", "font-weight": "bold"},
+                    children="Training Calendar",
                 ),
-            ),
-            html.Div(
-                className="calendar-container",
-                children=[
-                    html.Div(
-                        style={"font-size": "24px", "font-weight": "bold"},
-                        children="Training Calendar",
-                    ),
-                    html.Div(
-                        children=get_yearly_calendar(year=year),
-                        id="calendar-training-container",
-                    ),
-                ],
-            ),
-        ],
-        className="grid",  # CSS class for styling
+                html.Div(
+                    children=get_monthly_calendar(year=year, month=month),
+                    id="calendar-training-container",
+                ),
+            ],
     )
 
     return html.Div(
