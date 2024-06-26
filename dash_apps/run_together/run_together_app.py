@@ -1,11 +1,13 @@
 import dash
-from dash import Input, Output, ctx, ALL, no_update
+from dash import Input, Output, ctx, ALL, no_update, State, html, clientside_callback, ClientsideFunction
 from dash_extensions.enrich import DashProxy
 from flask import session
 from datetime import datetime, date
 import logging
 import dash_leaflet as dl
+import time
 
+from dash_apps.run_together.components.activity_graph import get_activity_graph
 from dash_apps.run_together.components.calendar_training import get_monthly_calendar
 from dash_apps.run_together.components.calendar_training import get_yearly_calendar
 from dash_apps.run_together.pages.home import get_home_layout
@@ -42,7 +44,6 @@ def run_together_app(
         :param n_clicks:  User Clicking on the activity
         :return: Hidden = True for the model Component
         """
-        logging.info(n_clicks)
         # When the Component is build it can trigger the callbakc to avoid it
         # check that n_click is not None
         if all(x is None for x in n_clicks):
@@ -86,7 +87,6 @@ def run_together_app(
         calendar_n_clicks,
     ):
         triggered_id = ctx.triggered_id
-        logging.info(f"1 {ctx.triggered_id}")
 
         # Case: the user select the months on the monthly calendar
         if triggered_id["type"] == "select-month-btn":
@@ -175,3 +175,39 @@ def run_together_app(
                 f"User Action: next-year. Get yearly Calendar: year={session['selected_year']}"
             )
             return get_yearly_calendar(year=session["selected_year"])
+
+    clientside_callback(
+        ClientsideFunction(
+            namespace='clientside',
+            function_name='storeWindowSize'
+        ),
+        Output('window-size', 'data'),
+        Input('interval-component', 'n_intervals'),
+    )
+
+    @dash_app.callback(
+        # Output('output-interval', 'children'),
+        Output('activities-graph', 'style'),
+        # Output('outputal', 'children'),
+
+        Input('window-size', 'data'),
+        Input('activity-stream', 'data'),
+
+    )
+    def update_graph_on_resize(window_size, activity_stream):
+        # Extract the new dimensions if necessary
+        logging.info(window_size)
+
+        width = window_size['width'] / 2
+        height = window_size['height']
+        style = {"width": str(width) + "px"}
+        # logging.info(style)
+
+        return style
+
+        #
+        #     # Simulate data processing delay
+        #     time.sleep(2)
+        #     fig = px.scatter(df, x='sepal_width', y='sepal_length', color='species')
+        #     return fig
+        # return current_figure

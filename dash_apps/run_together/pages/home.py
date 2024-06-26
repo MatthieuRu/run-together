@@ -1,5 +1,6 @@
 from datetime import datetime
 import time
+import logging
 
 from dash import html
 
@@ -20,6 +21,7 @@ def get_home_layout() -> html:
         strava_manager.generate_token_response(strava_code=session["strava_code"])
     # token expired
     elif time.time() > session["expires_at"]:
+        logging.info
         strava_manager.generate_token_response(strava_code=session["strava_code"])
     else:
         strava_manager.set_token_from_session()

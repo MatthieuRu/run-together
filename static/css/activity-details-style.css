@@ -1,20 +1,36 @@
 /* Define a CSS class named .grid */
-.grid-activity-map-plot {
+.grid-activity-details {
   display: grid; /* Use CSS Grid layout */
   grid-template-columns: 500px 1fr;
   text-align: center; /* Center-align the content within grid items */
-  /*border: 1px solid green;  Add a green border with a 1-pixel width to the grid */
   margin-left: 30px; /* Add a 20-pixel margin around the grid */
   margin-right: 30px; /* Add a 20-pixel margin around the grid */
   transition: 300ms; /* Change as needed */
 }
 
-.last-activities-graph {
-   border: 1px solid #ddd; /*Set border in red of each square */
-    width: 100%;
+
+/* If the screen size is 600px wide or less, hide the element */
+@media only screen and (max-width: 1850px) {
+  .activities-map-container {
+    display: none;
+  }
+ .grid-activity-details{
+      grid-template-columns: 100%;
+   }
 }
 
-.last-activities-map {
-   border: 1px solid #ddd; /*Set border in red of each square */
-    width: 100%;
+.div-range-slider-pace {
+   width: 50%;
+   margin: 0 auto; /* Center the div horizontally if needed */
+
+}
+
+/* assets/styles.css
+.graph-container {
+    transition: height 0.5s ease, width 0.5s ease;
+} */
+
+
+.dash-graph {
+    transition: height 0.5s ease, width 0.5s ease;
 }
