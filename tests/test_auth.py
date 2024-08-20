@@ -43,7 +43,7 @@ def test_mongo():
     for document in collection.find():
         print(document, flush=True)
 
-#     collection.delete_one({'strava_id': 81493658})
+    collection.delete_one({'strava_id': 81493658})
 
 
 # from datetime import timedelta, datetime

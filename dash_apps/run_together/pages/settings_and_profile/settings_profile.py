@@ -3,6 +3,8 @@ import dash_bootstrap_components as dbc
 
 from dash_apps.run_together.layout.header import get_header
 from dash_apps.run_together.layout.footer import get_footer
+from dash_apps.run_together.pages.settings_and_profile.settings_page_html_components import (
+    user_settings_div, user_settings_form)
 
 register_page(
     __name__,
@@ -33,8 +35,8 @@ def get_settings():
         children=[
             html.Div([
                 html.H1('User Information'),
-                html.Div(id='display-div'),
-                html.Div(id='form-div'),
+                user_settings_div,
+                user_settings_form,
                 html.Button('Change', id='change-button', n_clicks=0)
             ])
         ]

@@ -3,6 +3,7 @@ import dash
 from dash import Output, Input, State, html, no_update, dcc
 from dash_extensions.enrich import DashProxy
 import logging
+from datetime import datetime
 from dash_apps.run_together.pages.settings_and_profile.settings_profile_helper_method import which_race_button, which_race_distance
 from connections.update_data_mongo import update_user_record
 from dash_apps.run_together.utils.conversion import (
@@ -12,25 +13,27 @@ from dash_apps.run_together.utils.conversion import calculate_age
 
 def settings_profile_cb(dash_app: DashProxy):
     @dash_app.callback(
-        Output("display-div", "children"),
-        Output("form-div", "children"),
+        Output("user-settings-name", "children"),
+        Output("user-settings-email", "children"),
+        Output("user-settings-birthday", "children"),
         Input("url", "pathname"),
     )
     def toggle_form(url_path):
         user_values = session.get("run_together_user", {})
         if url_path == "/settings":
-            display = html.Div([
-                html.P(f"Name: {user_values['name']}"),
-                html.P(f"Email: {user_values['email']}"),
-                html.P(f"Birthday: {user_values['birthday']}")
-            ])
-            form = html.Div()
-            return display, form
+            name = f"Name: {user_values['name']}"
+            email = f"Email: {user_values['email']}"
+            birthday = f"Birthday: {user_values['birthday']}"
+
+            return name, email, birthday
         return no_update
 
     @dash_app.callback(
-        Output("display-div", "children"),
-        Output("form-div", "children"),
+        Output("display-user-settings-div", "style"),
+        Output("name-input", "value"),
+        Output("email-input", "value"),
+        Output("birthday-input", "date"),
+        Output("form-div", "style"),
         Output("change-button", "style"),
         Input("change-button", "n_clicks"),
         prevent_initial_call=True
@@ -38,55 +41,28 @@ def settings_profile_cb(dash_app: DashProxy):
     def display_user_form(n_clicks):
         if n_clicks:
             user_values = session.get("run_together_user", {})
-            display = html.Div()
-            form = html.Div(
-                children=[
-                    html.Form([
-                        html.Div([
-                            html.Label("Name:"),
-                            dcc.Input(
-                                type="text", id="name-input",
-                                className="user-input-field",
-                                placeholder="Enter your name",
-                                value=user_values["name"],
-                                required=True
-                            ),
-                        ]),
-                        html.Div([
-                            html.Label("Email Address:"),
-                            dcc.Input(
-                                type="email", id="email-input",
-                                className="user-input-field",
-                                placeholder="Enter your email",
-                                value=user_values["email"],
-                                required=True)
-                        ]),
-                        html.Div([
-                            html.Label("Birthday:"),
-                            dcc.DatePickerSingle(
-                                id="birthday-input",
-                                display_format="DD-MM-YYYY",
-                                placeholder="Select your birthday",
-                                date=convert_birthday_back(user_values["birthday"]),
-                                className="user-input-field"
-                            )
-                        ]),
-                    ]),
-                    html.Button("Submit", id="submit-button-user-form", n_clicks=0)
-                ],
-                className="user-settings-form-container"
-            )
-            return display, form, {"display": "none"}
+            name_input = user_values["name"]
+            email_input = user_values["email"]
+            birthday_input = convert_birthday_back(user_values["birthday"])
+
+            date_object = datetime.strptime(birthday_input, "%Y-%m-%d")
+
+            return ({"display": "none"}, name_input, email_input,
+                    date_object, {"display": "block"}, {"display": "none"}
+                    )
         return no_update
 
     @dash_app.callback(
-        Output('display-div', 'children'),
-        Output('form-div', 'children'),
+        Output("user-settings-name", "children"),
+        Output("user-settings-email", "children"),
+        Output("user-settings-birthday", "children"),
+        Output("display-user-settings-div", "style"),
+        Output("form-div", "style"),
         Output("change-button", "style"),
         Input('submit-button-user-form', 'n_clicks'),
-        State('name-input', 'value'),
-        State('email-input', 'value'),
-        State('birthday-input', 'date'),
+        State("name-input", "value"),
+        State("email-input", "value"),
+        State("birthday-input", "date"),
         prevent_initial_call=True
     )
     def update_output(submit_clicks, name, email, birthday):
@@ -100,7 +76,7 @@ def settings_profile_cb(dash_app: DashProxy):
                 converted_bd = convert_birthday(birthday)
 
                 max_bpm = 220 - calculate_age(
-                    convert_birthday)
+                    converted_bd)
 
                 update_user_record(session, {
                     "birthday": converted_bd,
@@ -114,14 +90,11 @@ def settings_profile_cb(dash_app: DashProxy):
                 session["run_together_user"]["email"] = email
                 session.modified = True
 
-                display = html.Div([
-                    html.P(f"Name: {name}"),
-                    html.P(f"Email: {email}"),
-                    html.P(f"Birthday: {converted_bd}")
-                ])
-                form = html.Div()
+                name = f"Name: {name}"
+                email = f"Email: {email}"
+                birthday = f"Birthday: {converted_bd}"
 
-                return display, form, {"display": "block"}
+                return name, email, birthday, {"display": "block"}, {"display": "none"}, {"display": "block"}
 
         return no_update
 
